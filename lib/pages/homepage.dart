@@ -1,0 +1,58 @@
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:reuteuteu/hive_boxes.dart';
+import 'package:reuteuteu/widgets/bucket_card.dart';
+
+import '../models/bucket.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Reuteuteu"),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (_) => AddOrEditEmployeeScreen(false)));
+              },
+            )
+          ],
+        ),
+        body: ValueListenableBuilder<Box<Bucket>>(
+          valueListenable: Boxes.getBuckets().listenable(),
+          builder: (context, box, _) {
+            final buckets = box.values.toList().cast<Bucket>();
+            if (buckets.isEmpty) {
+              return const Center(
+                child: Text(
+                  'No buckets yet!',
+                  style: TextStyle(fontSize: 24),
+                ),
+              );
+            }else{
+              return ListView(
+                children: buckets.map((bucket) => BucketCardWidget(bucket: bucket)).toList(),
+              );
+            }
+
+          },
+        ),
+      ),
+    );
+  }
+}
+
+
