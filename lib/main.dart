@@ -35,7 +35,8 @@ void main() async {
   // var vacation1 = DayOff("vac1", DateTime.utc(2021, 1, 1), DateTime.utc(2021, 1, 10), false);
   // var vacation2 = DayOff("vac2", DateTime.utc(2021, 2, 1), DateTime.utc(2021, 2, 10), false);
   // var vacation3 = DayOff("vac3", DateTime.utc(2021, 3, 1), DateTime.utc(2021, 3, 5), false);
-  // dayOffBox.addAll([vacation1, vacation2, vacation3]); // save to the db
+  // var vacation4 = DayOff("vac4", DateTime.utc(2021, 4, 1), DateTime.utc(2021, 4, 1), true);
+  // dayOffBox.addAll([vacation1, vacation2, vacation3, vacation4]); // save to the db
   //
   // // place days off in different pools
   // payedVacation.dayOffList = HiveList(dayOffBox);
@@ -43,7 +44,7 @@ void main() async {
   // payedVacation.save();
   //
   // rtt.dayOffList = HiveList(dayOffBox);
-  // rtt.dayOffList?.addAll([vacation3]);
+  // rtt.dayOffList?.addAll([vacation3, vacation4]);
   // rtt.save();
   // end testing data
 

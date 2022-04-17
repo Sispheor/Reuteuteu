@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:reuteuteu/models/bucket.dart';
-import 'package:reuteuteu/pages/list_pool.dart';
+import 'package:reuteuteu/models/pool.dart';
+import 'package:reuteuteu/pages/list_day_off.dart';
 
-class BucketCardWidget extends StatelessWidget {
+class PoolCardWidget extends StatelessWidget {
 
-  const BucketCardWidget({
+  const PoolCardWidget({
     Key? key,
-    required this.bucket
+    required this.pool
   }) : super(key: key);
 
-  final Bucket bucket;
+  final Pool pool;
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +19,13 @@ class BucketCardWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              title: Text(bucket.name),
+              title: Text(pool.name),
               onTap: () {
-                if(bucket.pools!.isNotEmpty){
+                if(pool.dayOffList!.isNotEmpty){
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) {
-                      return ListPoolPage(bucket: bucket);
+                      return ListDayOffPage(pool: pool);
                     }),
                   );
                 }
@@ -37,3 +37,4 @@ class BucketCardWidget extends StatelessWidget {
     );
   }
 }
+

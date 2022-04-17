@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:reuteuteu/models/bucket.dart';
+import 'package:reuteuteu/models/day_off.dart';
 import 'package:reuteuteu/models/pool.dart';
+import 'package:reuteuteu/widgets/day_off_card.dart';
 import 'package:reuteuteu/widgets/pool_card.dart';
 
 
-class ListPoolPage extends StatefulWidget {
+class ListDayOffPage extends StatefulWidget {
 
-  final Bucket bucket;
+  final Pool pool;
 
-  const ListPoolPage({Key? key,
-    required this.bucket}) : super(key: key);
+  const ListDayOffPage({Key? key,
+    required this.pool}) : super(key: key);
 
   @override
-  _ListPoolPageState createState() => _ListPoolPageState();
+  _ListDayOffPageState createState() => _ListDayOffPageState();
 }
 
-class _ListPoolPageState extends State<ListPoolPage>{
+class _ListDayOffPageState extends State<ListDayOffPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Bucket ${widget.bucket.name}"),
+        title: Text("Pool ${widget.pool.name}"),
       ),
       body: Column(
         children: [
@@ -31,7 +32,7 @@ class _ListPoolPageState extends State<ListPoolPage>{
                       leading: ExcludeSemantics(
                         child: CircleAvatar(
                             backgroundColor: Colors.blue,
-                            child: Text(widget.bucket.getPoolMaxDays().toString(),
+                            child: Text(widget.pool.maxDays.toString(),
                                 style: const TextStyle(color: Colors.white))
                         ),
                       ),
@@ -41,7 +42,7 @@ class _ListPoolPageState extends State<ListPoolPage>{
                       leading: ExcludeSemantics(
                         child: CircleAvatar(
                             backgroundColor: Colors.blue,
-                            child: Text(widget.bucket.getTakenDays().toString(),
+                            child: Text(widget.pool.getTotalTakenDays().toString(),
                                 style: const TextStyle(color: Colors.white))
                         ),
                       ),
@@ -51,20 +52,19 @@ class _ListPoolPageState extends State<ListPoolPage>{
                       leading: ExcludeSemantics(
                         child: CircleAvatar(
                             backgroundColor: Colors.blue,
-                            child: Text(widget.bucket.getAvailable().toString(),
+                            child: Text(widget.pool.getAvailableDays().toString(),
                                 style: const TextStyle(color: Colors.white))
                         ),
                       ),
                       title: const Text('Available', style: TextStyle(color: Colors.black))
                   ),
                 ],
-
             ),
           ),
           ListView(
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
-            children: widget.bucket.pools!.castHiveList().cast<Pool>().map((pool) => PoolCardWidget(pool: pool)).toList(),
+            children: widget.pool.dayOffList!.castHiveList().cast<DayOff>().map((dayOff) => DayOffCardWidget(dayOff: dayOff)).toList(),
           )
         ],
       ),

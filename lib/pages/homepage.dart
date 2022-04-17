@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
             if (buckets.isEmpty) {
               return const Center(
                 child: Text(
-                  'No buckets yet!',
+                  'No buckets yet',
                   style: TextStyle(fontSize: 24),
                 ),
               );
