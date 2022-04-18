@@ -2,15 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:reuteuteu/models/day_off.dart';
 import 'package:reuteuteu/widgets/date_card.dart';
 
-class DayOffCardWidget extends StatelessWidget {
+class DayOffCardWidget extends StatefulWidget {
 
-  const DayOffCardWidget({
+  DayOff dayOff;
+  final VoidCallback callback;
+
+  DayOffCardWidget({
     Key? key,
-    required this.dayOff
+    required this.dayOff, required this.callback
   }) : super(key: key);
 
-  final DayOff dayOff;
 
+  @override
+  State<DayOffCardWidget> createState() => _DayOffCardWidgetState();
+}
+
+class _DayOffCardWidgetState extends State<DayOffCardWidget> {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -21,13 +28,22 @@ class DayOffCardWidget extends StatelessWidget {
             ListTile(
               leading: CircleAvatar(
                   backgroundColor: Colors.green,
-                  child: Text(dayOff.getTotalTakenDays().toString(),
+                  child: Text(widget.dayOff.getTotalTakenDays().toString(),
                       style: const TextStyle(color: Colors.white))),
-              title: Text(dayOff.name),
-              subtitle: dayOff.isHalfDay? const Text(
+              title: Text(widget.dayOff.name),
+              subtitle: widget.dayOff.isHalfDay? const Text(
                 "Half day(s)",
                 style: TextStyle(color: Colors.black),
               ): null,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
+                  IconButton(onPressed: () {
+                    _showConfirmDeleteDialog(context, widget.dayOff);
+                  }, icon: const Icon(Icons.delete)),
+                ],
+              ),
             ),
             Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -37,16 +53,16 @@ class DayOffCardWidget extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          DateCard(dayOff.dateStart),
+                          DateCard(widget.dayOff.dateStart),
 
-                          if (dayOff.getTotalTakenDays() > 1)
+                          if (widget.dayOff.getTotalTakenDays() > 1)
                             const Icon(
                               Icons.arrow_forward,
                               color: Colors.green,
                               size: 30.0,
                             ),
-                          if (dayOff.getTotalTakenDays() > 1)
-                            DateCard(dayOff.dateEnd),
+                          if (widget.dayOff.getTotalTakenDays() > 1)
+                            DateCard(widget.dayOff.dateEnd),
                         ],
                       ),
 
@@ -56,6 +72,41 @@ class DayOffCardWidget extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _showConfirmDeleteDialog(BuildContext context, DayOff dayOffToDelete) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm deletion'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text("Delete the taken day '${dayOffToDelete.name}'"),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Confirm', style: TextStyle(color: Colors.red)),
+              onPressed: () async {
+                widget.dayOff.delete();
+                widget.callback();
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Cancel', style: TextStyle(color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

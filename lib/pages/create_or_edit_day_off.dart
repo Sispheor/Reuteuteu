@@ -11,8 +11,12 @@ class CreateOrEditDayOffPage extends StatefulWidget {
 
   final bool isEdit;
   final Pool pool;
+  final VoidCallback callback;
 
-  const CreateOrEditDayOffPage(this.isEdit, this.pool, {Key? key}) : super(key: key);
+  const CreateOrEditDayOffPage({
+    Key? key,
+    required this.isEdit, required this.pool, required this.callback
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -141,6 +145,7 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
     box.add(newDayOff);
     widget.pool.dayOffList!.add(newDayOff);
     widget.pool.save();
+    widget.callback();
     // // debug
     // // List<DayOff> result = await dao.findAllDayOff();
     // // debugPrint('result: $result');

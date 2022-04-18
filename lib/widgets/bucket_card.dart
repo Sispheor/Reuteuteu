@@ -21,14 +21,12 @@ class BucketCardWidget extends StatelessWidget {
             ListTile(
               title: Text(bucket.name),
               onTap: () {
-                if(bucket.pools!.isNotEmpty){
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) {
                       return ListPoolPage(bucket: bucket);
                     }),
                   );
-                }
               },
             ),
           ],

@@ -1,4 +1,7 @@
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:reuteuteu/hive_boxes.dart';
 import 'package:reuteuteu/models/day_off.dart';
 import 'package:reuteuteu/models/pool.dart';
 import 'package:reuteuteu/pages/create_or_edit_day_off.dart';
@@ -7,9 +10,9 @@ import 'package:reuteuteu/widgets/day_off_card.dart';
 
 class ListDayOffPage extends StatefulWidget {
 
-  final Pool pool;
+  Pool pool;
 
-  const ListDayOffPage({Key? key,
+  ListDayOffPage({Key? key,
     required this.pool}) : super(key: key);
 
   @override
@@ -17,6 +20,32 @@ class ListDayOffPage extends StatefulWidget {
 }
 
 class _ListDayOffPageState extends State<ListDayOffPage>{
+
+  List<DayOff> listDayOffs = [];
+  late Pool? currentPoolUpdated = Boxes.getPools().getAt(widget.pool.key);
+
+  void getDayOffs() {
+    currentPoolUpdated = Boxes.getPools().getAt(widget.pool.key);
+    currentPoolUpdated!.save();
+    if (currentPoolUpdated != null && currentPoolUpdated!.dayOffList != null){
+      if (currentPoolUpdated!.dayOffList!.isNotEmpty){
+        setState(() {
+          listDayOffs = currentPoolUpdated!.dayOffList!.castHiveList().cast<DayOff>();
+        });
+      }else{
+        setState(() {
+          listDayOffs = [];
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    getDayOffs();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +56,7 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
             icon: const Icon(Icons.add),
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(false, widget.pool))
+                  MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(isEdit: false, pool: widget.pool, callback: getDayOffs))
               ).then((_) => setState(() {}));
             },
           )
@@ -42,7 +71,7 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
                     leading: ExcludeSemantics(
                       child: CircleAvatar(
                           backgroundColor: Colors.blue,
-                          child: Text(widget.pool.maxDays.toString(),
+                          child: Text(currentPoolUpdated!.maxDays.toString(),
                               style: const TextStyle(color: Colors.white))
                       ),
                     ),
@@ -52,7 +81,7 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
                     leading: ExcludeSemantics(
                       child: CircleAvatar(
                           backgroundColor: Colors.blue,
-                          child: Text(widget.pool.getTotalTakenDays().toString(),
+                          child: Text(currentPoolUpdated!.getTotalTakenDays().toString(),
                               style: const TextStyle(color: Colors.white))
                       ),
                     ),
@@ -62,7 +91,7 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
                     leading: ExcludeSemantics(
                       child: CircleAvatar(
                           backgroundColor: Colors.blue,
-                          child: Text(widget.pool.getAvailableDays().toString(),
+                          child: Text(currentPoolUpdated!.getAvailableDays().toString(),
                               style: const TextStyle(color: Colors.white))
                       ),
                     ),
@@ -72,11 +101,25 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
             ),
           ),
           Expanded(
-              child: ListView(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                children: widget.pool.dayOffList!.castHiveList().cast<DayOff>().map((dayOff) => DayOffCardWidget(dayOff: dayOff)).toList(),
-              ))
+            child: ValueListenableBuilder<Box<Pool>>(
+              valueListenable: Boxes.getPools().listenable(),
+              builder: (context, box, _) {
+                if (listDayOffs.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No day off',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                  );
+                }else{
+                  return ListView(
+                    // children: widget.pool.dayOffList!.castHiveList().cast<DayOff>().map((dayOff) => DayOffCardWidget(dayOff: dayOff)).toList(),
+                    children: listDayOffs.map((dayOff) => DayOffCardWidget(dayOff: dayOff, callback: getDayOffs)).toList(),
+                  );
+                }
+              },
+            ),
+          )
         ],
       ),
 

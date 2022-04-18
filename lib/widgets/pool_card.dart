@@ -21,14 +21,12 @@ class PoolCardWidget extends StatelessWidget {
             ListTile(
               title: Text(pool.name),
               onTap: () {
-                if(pool.dayOffList!.isNotEmpty){
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) {
                       return ListDayOffPage(pool: pool);
                     }),
                   );
-                }
               },
             ),
           ],
