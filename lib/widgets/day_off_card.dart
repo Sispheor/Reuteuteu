@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:reuteuteu/models/day_off.dart';
+import 'package:reuteuteu/models/pool.dart';
+import 'package:reuteuteu/pages/create_or_edit_day_off.dart';
 import 'package:reuteuteu/widgets/date_card.dart';
 
 class DayOffCardWidget extends StatefulWidget {
 
   DayOff dayOff;
   final VoidCallback callback;
+  final Pool pool;
 
   DayOffCardWidget({
     Key? key,
-    required this.dayOff, required this.callback
+    required this.dayOff, required this.callback, required this.pool
   }) : super(key: key);
 
 
@@ -38,7 +41,11 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.edit)),
+                  IconButton(onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(isEdit: true, pool: widget.pool, callback: widget.callback, dayOff: widget.dayOff))
+                    ).then((_) => setState(() {}));
+                  }, icon: const Icon(Icons.edit)),
                   IconButton(onPressed: () {
                     _showConfirmDeleteDialog(context, widget.dayOff);
                   }, icon: const Icon(Icons.delete)),
@@ -55,13 +62,13 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
                         children: [
                           DateCard(widget.dayOff.dateStart),
 
-                          if (widget.dayOff.getTotalTakenDays() > 1)
+                          if (widget.dayOff.getTotalTakenDays() >= 1)
                             const Icon(
                               Icons.arrow_forward,
                               color: Colors.green,
                               size: 30.0,
                             ),
-                          if (widget.dayOff.getTotalTakenDays() > 1)
+                          if (widget.dayOff.getTotalTakenDays() >= 1)
                             DateCard(widget.dayOff.dateEnd),
                         ],
                       ),

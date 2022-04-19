@@ -114,7 +114,7 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
                 }else{
                   return ListView(
                     // children: widget.pool.dayOffList!.castHiveList().cast<DayOff>().map((dayOff) => DayOffCardWidget(dayOff: dayOff)).toList(),
-                    children: listDayOffs.map((dayOff) => DayOffCardWidget(dayOff: dayOff, callback: getDayOffs)).toList(),
+                    children: listDayOffs.map((dayOff) => DayOffCardWidget(dayOff: dayOff, pool: widget.pool, callback: getDayOffs)).toList(),
                   );
                 }
               },

@@ -12,10 +12,11 @@ class CreateOrEditDayOffPage extends StatefulWidget {
   final bool isEdit;
   final Pool pool;
   final VoidCallback callback;
+  final DayOff? dayOff;
 
   const CreateOrEditDayOffPage({
     Key? key,
-    required this.isEdit, required this.pool, required this.callback
+    required this.isEdit, required this.pool, required this.callback, this.dayOff
   }) : super(key: key);
 
   @override
@@ -33,12 +34,30 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
   bool isHalfDay = false;
   DateTime? dayOffDateStart;
   DateTime? dayOffDateEnd;
+  bool firstTimeEdit = true;  // prevent checkbox setstate from resetting already done change in text box
 
   @override
   Widget build(BuildContext context) {
+
+    String title = "Take a day in '${widget.pool.name}'";
+
+    if (widget.isEdit) {
+      if (firstTimeEdit){
+        nameController.text = widget.dayOff!.name;
+        isHalfDay = widget.dayOff!.isHalfDay;
+        dayOffDateStart = widget.dayOff!.dateStart;
+        dayOffDateEnd = widget.dayOff!.dateEnd;
+        String dateStart = DateFormat('yyyy-MM-dd').format(widget.dayOff!.dateStart);
+        String dateEnd = DateFormat('yyyy-MM-dd').format(widget.dayOff!.dateEnd);
+        dateRangeController.text = "$dateStart → $dateEnd";
+        title = "Edit '${widget.pool.name}'";
+        firstTimeEdit = false;
+      }
+    }
+
     return Scaffold(
         appBar: AppBar(
-          title: Text("Take a day in '${widget.pool.name}'"),
+          title: Text(title),
         ),
         body: Container(
             padding: const EdgeInsets.all(40.0),
@@ -80,9 +99,9 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
                                 Material(
                                   child: Checkbox(
                                     value: isHalfDay,
-                                    onChanged: (value) {
+                                    onChanged: (bool? newValue) {
                                       setState(() {
-                                        isHalfDay = value ?? false;
+                                        isHalfDay = newValue!;
                                       });
                                     },
                                   ),
@@ -105,7 +124,12 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               // TODO check no date overlap (except if both are half days)
-              await _persistDayOff();
+              if (widget.isEdit){
+                await _updateDayOff(widget.dayOff!);
+              }else{
+                await _persistDayOff();
+              }
+              widget.callback();
               Navigator.pop(context);  // return to previous screen (main)
             }
           },
@@ -116,10 +140,16 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
   }
 
   Future<void> _datePicker(BuildContext context) async {
-    final initialDateRange = DateTimeRange(
+    var initialDateRange = DateTimeRange(
         start: DateTime.now(),
         end: DateTime.now().add(Duration(hours: 24))
     );
+    if (widget.isEdit){
+      initialDateRange = DateTimeRange(
+          start: widget.dayOff!.dateStart,
+          end:widget.dayOff!.dateEnd
+      );
+    }
     final DateTimeRange? picked = await showDateRangePicker(
       context: context,
       initialDateRange: initialDateRange,
@@ -127,11 +157,14 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
       lastDate: DateTime(DateTime.now().year + 3),
     );
     print(picked);
-    String dateStart = DateFormat('yyyy-MM-dd').format(picked!.start);
-    String dateEnd = DateFormat('yyyy-MM-dd').format(picked.end);
-    dateRangeController.text = "$dateStart → $dateEnd";
-    dayOffDateStart = picked.start;
-    dayOffDateEnd = picked.end;
+    if (picked != null){
+      String dateStart = DateFormat('yyyy-MM-dd').format(picked.start);
+      String dateEnd = DateFormat('yyyy-MM-dd').format(picked.end);
+      dateRangeController.text = "$dateStart → $dateEnd";
+      dayOffDateStart = picked.start;
+      dayOffDateEnd = picked.end;
+    }
+
   }
 
   Future<void> _persistDayOff() async {
@@ -146,12 +179,15 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
     widget.pool.dayOffList!.add(newDayOff);
     widget.pool.save();
     widget.callback();
-    // // debug
-    // // List<DayOff> result = await dao.findAllDayOff();
-    // // debugPrint('result: $result');
-    // // for (var res in result) {
-    // //   debugPrint('res: $res');
-    // // }
+  }
+
+  _updateDayOff(DayOff dayOffToUpdate) {
+    dayOffToUpdate.name = nameController.text;
+    dayOffToUpdate.dateStart = dayOffDateStart!;
+    dayOffToUpdate.dateEnd = dayOffDateEnd!;
+    dayOffToUpdate.isHalfDay = isHalfDay;
+    dayOffToUpdate.save();
+
   }
 
 }
