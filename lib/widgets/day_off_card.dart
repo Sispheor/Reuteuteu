@@ -131,7 +131,7 @@ class _TimelineTileStartEnd  extends StatelessWidget {
                         ),
                       ),
                       beforeLineStyle: LineStyle(
-                        color: _getColorIfHalday(dayOff),
+                        color: _getColorIfHalfDay(dayOff),
                         thickness: 4,
                       ),
                       endChild: _Child(
@@ -166,7 +166,7 @@ class _TimelineTileStartEnd  extends StatelessWidget {
     );
   }
 
-  _getColorIfHalday(DayOff isHalfDay) {
+  _getColorIfHalfDay(DayOff isHalfDay) {
     if (dayOff.getTotalTakenDays() > 1){
       return Colors.green;
     }

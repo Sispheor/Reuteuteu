@@ -1,12 +1,11 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:reuteuteu/hive_boxes.dart';
 import 'package:reuteuteu/models/day_off.dart';
 import 'package:reuteuteu/models/pool.dart';
 import 'package:reuteuteu/pages/create_or_edit_day_off.dart';
+import 'package:reuteuteu/widgets/ConsumptionGauge.dart';
 import 'package:reuteuteu/widgets/day_off_card.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 
 class ListDayOffPage extends StatefulWidget {
@@ -69,7 +68,8 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
               // margin: const EdgeInsets.all(10.0),
               child: Container(
                   height: 150,
-                  child: _buildDistanceTrackerExample(currentPoolUpdated!)
+                  // child: _buildGauge(currentPoolUpdated!)
+                  child: ConsumptionGauge(max: currentPoolUpdated!.maxDays, available: currentPoolUpdated!.getAvailableDays())
               )
           ),
           Expanded(
@@ -98,67 +98,3 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
     );
   }
 }
-
-/// Returns the gauge distance tracker
-Widget _buildDistanceTrackerExample(Pool currentPoolUpdated) {
-  return SfRadialGauge(
-    enableLoadingAnimation: true,
-    axes: <RadialAxis>[
-      RadialAxis(
-          showLabels: false,
-          showTicks: false,
-          radiusFactor: 0.8,
-          minimum: 0,
-          maximum: currentPoolUpdated.maxDays,
-          axisLineStyle: const AxisLineStyle(
-              cornerStyle: CornerStyle.startCurve, thickness: 5),
-          annotations: <GaugeAnnotation>[
-            GaugeAnnotation(
-                angle: 90,
-                positionFactor: 0,
-                widget: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(currentPoolUpdated.getAvailableDays().toString(),
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 30)),
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(0, 2, 0, 0),
-                      child: Text(
-                        'days',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
-                            fontSize: 14),
-                      ),
-                    )
-                  ],
-                )),
-            const GaugeAnnotation(
-              angle: 124,
-              positionFactor: 1.1,
-              widget: Text('0', style: TextStyle(fontSize: 14)),
-            ),
-            GaugeAnnotation(
-              angle: 54,
-              positionFactor: 1.1,
-              widget: Text(currentPoolUpdated.maxDays.toString(),
-                  style: const TextStyle(fontSize: 14)),
-            ),
-          ],
-          pointers: <GaugePointer>[
-            RangePointer(
-                value: currentPoolUpdated.getAvailableDays(),
-                width: 18,
-                pointerOffset: -6,
-                cornerStyle: CornerStyle.bothCurve,
-                color: Colors.green
-            )
-
-          ]),
-    ],
-  );
-}
-

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reuteuteu/models/bucket.dart';
 import 'package:reuteuteu/models/pool.dart';
+import 'package:reuteuteu/widgets/ConsumptionGauge.dart';
 import 'package:reuteuteu/widgets/pool_card.dart';
 
 
@@ -25,41 +26,12 @@ class _ListPoolPageState extends State<ListPoolPage>{
       body: Column(
         children: [
           Card(
-            child: Column(
-                children: [
-                  ListTile(
-                      leading: ExcludeSemantics(
-                        child: CircleAvatar(
-                            backgroundColor: Colors.blue,
-                            child: Text(widget.bucket.getPoolMaxDays().toString(),
-                                style: const TextStyle(color: Colors.white))
-                        ),
-                      ),
-                      title: const Text('Total', style: TextStyle(color: Colors.black))
-                  ),
-                  ListTile(
-                      leading: ExcludeSemantics(
-                        child: CircleAvatar(
-                            backgroundColor: Colors.blue,
-                            child: Text(widget.bucket.getTakenDays().toString(),
-                                style: const TextStyle(color: Colors.white))
-                        ),
-                      ),
-                      title: const Text('Consumed', style: TextStyle(color: Colors.black))
-                  ),
-                  ListTile(
-                      leading: ExcludeSemantics(
-                        child: CircleAvatar(
-                            backgroundColor: Colors.blue,
-                            child: Text(widget.bucket.getAvailable().toString(),
-                                style: const TextStyle(color: Colors.white))
-                        ),
-                      ),
-                      title: const Text('Available', style: TextStyle(color: Colors.black))
-                  ),
-                ],
-
-            ),
+            // margin: const EdgeInsets.all(10.0),
+              child: Container(
+                  height: 150,
+                  // child: _buildGauge(currentPoolUpdated!)
+                  child: ConsumptionGauge(max: widget.bucket.getPoolMaxDays(), available: widget.bucket.getAvailable())
+              )
           ),
           ListView(
             scrollDirection: Axis.vertical,
