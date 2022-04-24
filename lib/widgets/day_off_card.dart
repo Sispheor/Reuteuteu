@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:reuteuteu/models/day_off.dart';
 import 'package:reuteuteu/models/pool.dart';
 import 'package:reuteuteu/pages/create_or_edit_day_off.dart';
+import 'package:reuteuteu/widgets/dialog_confirm_cancel.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class DayOffCardWidget extends StatefulWidget {
@@ -51,8 +52,12 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
                         MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(isEdit: true, pool: widget.pool, callback: widget.callback, dayOff: widget.dayOff))
                     ).then((_) => setState(() {}));
                   }, icon: const Icon(Icons.edit)),
-                  IconButton(onPressed: () {
-                    _showConfirmDeleteDialog(context, widget.dayOff);
+                  IconButton(onPressed: () async {
+                    final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete day off '${widget.dayOff.name}'?", 'Confirm');
+                    if (action == DialogAction.confirmed) {
+                      widget.dayOff.delete();
+                      widget.callback();
+                    }
                   }, icon: const Icon(Icons.delete)),
                 ],
               ),
@@ -63,40 +68,6 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
     );
   }
 
-  Future<void> _showConfirmDeleteDialog(BuildContext context, DayOff dayOffToDelete) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirm deletion'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                Text("Delete the taken day '${dayOffToDelete.name}'"),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Confirm', style: TextStyle(color: Colors.red)),
-              onPressed: () async {
-                widget.dayOff.delete();
-                widget.callback();
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Cancel', style: TextStyle(color: Colors.black)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 }
 
 

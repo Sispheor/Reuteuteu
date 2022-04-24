@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:reuteuteu/models/pool.dart';
 import 'package:reuteuteu/pages/list_day_off.dart';
-import 'package:reuteuteu/widgets/ConsumptionGauge.dart';
+import 'package:reuteuteu/widgets/dialog_confirm_cancel.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class PoolCardWidget extends StatelessWidget {
 
-  const PoolCardWidget({
+  PoolCardWidget({
     Key? key,
-    required this.pool
+    required this.pool, required this.callback
   }) : super(key: key);
 
-  final Pool pool;
+  final VoidCallback callback;
+  Pool pool;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +43,23 @@ class PoolCardWidget extends StatelessWidget {
                             thickness: 20)
                       ]
                   )
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(onPressed: () {
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(isEdit: true, pool: widget.pool, callback: widget.callback, dayOff: widget.dayOff))
+                    // ).then((_) => setState(() {}));
+                  }, icon: const Icon(Icons.edit)),
+                  IconButton(onPressed: () async {
+                    final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete pool '${pool.name}'?", 'Confirm');
+                    if (action == DialogAction.confirmed) {
+                      pool.delete();
+                      callback();
+                    }
+                  }, icon: const Icon(Icons.delete)),
+                ],
               ),
               onTap: () {
                 Navigator.push(
