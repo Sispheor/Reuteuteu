@@ -22,10 +22,10 @@ class ListDayOffPage extends StatefulWidget {
 class _ListDayOffPageState extends State<ListDayOffPage>{
 
   List<DayOff> listDayOffs = [];
-  late Pool? currentPoolUpdated = Boxes.getPools().getAt(widget.pool.key);
+  late Pool? currentPoolUpdated = Boxes.getPools().get(widget.pool.key);
 
   void getDayOffs() {
-    currentPoolUpdated = Boxes.getPools().getAt(widget.pool.key);
+    currentPoolUpdated = Boxes.getPools().get(widget.pool.key);
     currentPoolUpdated!.save();
     if (currentPoolUpdated != null && currentPoolUpdated!.dayOffList != null){
       if (currentPoolUpdated!.dayOffList!.isNotEmpty){

@@ -1,8 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:reuteuteu/hive_boxes.dart';
 import 'package:reuteuteu/models/bucket.dart';
+import 'package:reuteuteu/models/pool.dart';
 
 class CreateOrEditBucketPage extends StatefulWidget {
 
@@ -92,10 +94,13 @@ class _CreateOrEditDayOffPage  extends State<CreateOrEditBucketPage> {
 
   }
 
-  _persistBucket() {
+  _persistBucket() async {
     Bucket newBucket = Bucket(nameController.text);
     final box = Boxes.getBuckets();
     box.add(newBucket);
+    var newPoolBox = await Hive.openBox<Pool>('pools');
+    newBucket.pools = HiveList(newPoolBox);
+    newBucket.save();
   }
 
   String _getDefaultBucketName() {

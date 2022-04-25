@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reuteuteu/models/bucket.dart';
+import 'package:reuteuteu/models/day_off.dart';
 import 'package:reuteuteu/models/pool.dart';
 import 'package:reuteuteu/pages/create_or_edit_pool.dart';
 import 'package:reuteuteu/pages/list_day_off.dart';
@@ -63,7 +64,7 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
                   IconButton(onPressed: () async {
                     final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete pool '${widget.pool.name}'?", 'Confirm');
                     if (action == DialogAction.confirmed) {
-                      widget.pool.delete();
+                      _performRecursiveDeletion(widget.pool);
                       widget.callback();
                     }
                   }, icon: const Icon(Icons.delete)),
@@ -83,5 +84,13 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
       ),
     );
   }
-}
 
+  void _performRecursiveDeletion(Pool pool) {
+    if (pool.dayOffList != null){
+      for (DayOff dayOff in pool.dayOffList!.castHiveList()){
+        dayOff.delete();
+      }
+    }
+    pool.delete();
+  }
+}

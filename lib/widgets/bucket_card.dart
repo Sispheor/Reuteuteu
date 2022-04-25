@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:reuteuteu/hive_boxes.dart';
 import 'package:reuteuteu/models/bucket.dart';
+import 'package:reuteuteu/models/day_off.dart';
+import 'package:reuteuteu/models/pool.dart';
 import 'package:reuteuteu/pages/create_or_edit_bucket.dart';
 import 'package:reuteuteu/pages/list_pool.dart';
 import 'package:reuteuteu/widgets/dialog_confirm_cancel.dart';
@@ -38,8 +41,7 @@ class _BucketCardWidgetState extends State<BucketCardWidget> {
                   IconButton(onPressed: () async {
                     final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete bucket '${widget.bucket.name}'?", 'Confirm');
                     if (action == DialogAction.confirmed) {
-                      widget.bucket.delete();
-                      // widget.callback();
+                      _performRecursiveDeletion(widget.bucket);
                     }
                   }, icon: const Icon(Icons.delete)),
                 ],
@@ -57,5 +59,19 @@ class _BucketCardWidgetState extends State<BucketCardWidget> {
         ),
       ),
     );
+  }
+
+  void _performRecursiveDeletion(Bucket bucket) {
+    if (bucket.pools != null){
+      for (Pool pool in bucket.pools!.castHiveList()){
+        if (pool.dayOffList != null){
+          for (DayOff dayOff in pool.dayOffList!.castHiveList()){
+            dayOff.delete();
+          }
+        }
+        pool.delete();
+      }
+      bucket.delete();
+    }
   }
 }

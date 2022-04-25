@@ -23,10 +23,10 @@ class ListPoolPage extends StatefulWidget {
 class _ListPoolPageState extends State<ListPoolPage>{
 
   List<Pool> listPools = [];
-  late Bucket? currentBucketUpdated = Boxes.getBuckets().getAt(widget.bucket.key);
+  late Bucket? currentBucketUpdated = Boxes.getBuckets().get(widget.bucket.key);
 
   void getPools() {
-    currentBucketUpdated = Boxes.getBuckets().getAt(widget.bucket.key);
+    currentBucketUpdated = Boxes.getBuckets().get(widget.bucket.key);
     currentBucketUpdated!.save();
     if (currentBucketUpdated != null && currentBucketUpdated!.pools != null){
       if (currentBucketUpdated!.pools!.isNotEmpty){
