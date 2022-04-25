@@ -1,41 +1,47 @@
 
+
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 import 'package:reuteuteu/hive_boxes.dart';
 import 'package:reuteuteu/models/bucket.dart';
+import 'package:reuteuteu/models/pool.dart';
 
-class CreateOrEditBucketPage extends StatefulWidget {
+class CreateOrEditPoolPage extends StatefulWidget {
 
   final bool isEdit;
-  final Bucket? bucket;
+  final VoidCallback callback;
+  final Bucket bucket;
+  final Pool? pool;
 
-  const CreateOrEditBucketPage({
+  CreateOrEditPoolPage({
     Key? key,
-    required this.isEdit, this.bucket
+    required this.isEdit, required this.bucket, this.pool, required this.callback
   }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _CreateOrEditDayOffPage();
+    return _CreateOrEditPoolPage();
   }
 
 }
 
-class _CreateOrEditDayOffPage  extends State<CreateOrEditBucketPage> {
-  String title = "Create a new bucket";
+class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
+
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
-
+  final maxDayController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
 
+    String title = "Create a pool of day off";
+
     if (widget.isEdit){
-      nameController.text = widget.bucket!.name;
-      title = "Edit bucket '${widget.bucket!.name}'";
-    }else{
-      nameController.text = _getDefaultBucketName();
+      title = "Edit pool '${widget.pool!.name}'";
+      nameController.text = widget.pool!.name;
+      maxDayController.text = widget.pool!.maxDays.toStringAsFixed(0);
     }
+
 
     return Scaffold(
         appBar: AppBar(
@@ -52,7 +58,7 @@ class _CreateOrEditDayOffPage  extends State<CreateOrEditBucketPage> {
                             TextFormField(
                               decoration: const InputDecoration(
                                   border: UnderlineInputBorder(),
-                                  labelText: 'Name',
+                                  labelText: 'Name'
                               ),
                               controller: nameController,
                               // The validator receives the text that the user has entered.
@@ -60,11 +66,19 @@ class _CreateOrEditDayOffPage  extends State<CreateOrEditBucketPage> {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter a name';
                                 }
-                                if (!widget.isEdit && _isBucketNameExist(value)){
+                                if (!widget.isEdit && _isPoolNameExist(value)){
                                   return 'Bucket name exist already';
                                 }
                                 return null;
                               },
+                            ),
+                            TextField(
+                              controller: maxDayController,
+                              decoration: const InputDecoration(labelText: "Number of day"),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly
+                              ], // Only numbers can be entered
                             ),
                           ]
                       )
@@ -78,10 +92,11 @@ class _CreateOrEditDayOffPage  extends State<CreateOrEditBucketPage> {
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               if (widget.isEdit){
-                await _updateBucket(widget.bucket!);
+                await _updatePool(widget.pool!);
               }else{
-                await _persistBucket();
+                await _persistPool();
               }
+              widget.callback();
               Navigator.pop(context);  // return to previous screen (main)
             }
           },
@@ -89,36 +104,35 @@ class _CreateOrEditDayOffPage  extends State<CreateOrEditBucketPage> {
           backgroundColor: Colors.green,
         )
     );
-
   }
 
-  _persistBucket() {
-    Bucket newBucket = Bucket(nameController.text);
-    final box = Boxes.getBuckets();
-    box.add(newBucket);
+
+  Future<void> _persistPool() async {
+
+    Pool newPool = Pool(
+        nameController.text,
+        double.parse(maxDayController.text));
+    final box = Boxes.getPools();
+    box.add(newPool);
+    widget.bucket.pools!.add(newPool);
+    widget.bucket.save();
+    // widget.callback();
   }
 
-  String _getDefaultBucketName() {
-    DateTime now = DateTime.now();
-    DateTime nowPlusOneYear = DateTime(now.year + 1);
-    String formatteYearNow = DateFormat('yyyy').format(now);
-    String formatterNowPlusOneYear = DateFormat('yyyy').format(nowPlusOneYear);
-    String finalDate = "$formatteYearNow/$formatterNowPlusOneYear";
-    return finalDate;
-  }
-
-  bool _isBucketNameExist(String value) {
-    final box = Boxes.getBuckets();
-    for (Bucket existingBucket in box.values.toList().cast<Bucket>()){
-      if (value == existingBucket.name){
+  bool _isPoolNameExist(String value) {
+    final box = Boxes.getPools();
+    for (Pool existingPool in box.values.toList().cast<Pool>()){
+      if (value == existingPool.name){
         return true;
       }
     }
     return false;
   }
 
-  _updateBucket(Bucket bucket) {
-    bucket.name = nameController.text;
-    bucket.save();
+  _updatePool(Pool poolToUpdate) {
+    poolToUpdate.name = nameController.text;
+    poolToUpdate.maxDays = double.parse(maxDayController.text);
+    poolToUpdate.save();
   }
+
 }

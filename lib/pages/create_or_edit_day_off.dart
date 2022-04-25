@@ -92,6 +92,7 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
                                   if (value == null || value.isEmpty) {
                                     return "Please select a date";
                                   }
+                                  return null;
                                 }
                             ),
                             Row(
