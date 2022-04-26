@@ -1,6 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:reuteuteu/hive_boxes.dart';
 import 'package:reuteuteu/pages/create_or_edit_bucket.dart';
 import 'package:reuteuteu/widgets/bucket_card.dart';

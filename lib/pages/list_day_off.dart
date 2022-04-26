@@ -4,7 +4,7 @@ import 'package:reuteuteu/hive_boxes.dart';
 import 'package:reuteuteu/models/day_off.dart';
 import 'package:reuteuteu/models/pool.dart';
 import 'package:reuteuteu/pages/create_or_edit_day_off.dart';
-import 'package:reuteuteu/widgets/ConsumptionGauge.dart';
+import 'package:reuteuteu/widgets/consumption_gauge.dart';
 import 'package:reuteuteu/widgets/day_off_card.dart';
 
 

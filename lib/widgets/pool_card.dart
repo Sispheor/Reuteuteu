@@ -5,7 +5,8 @@ import 'package:reuteuteu/models/pool.dart';
 import 'package:reuteuteu/pages/create_or_edit_pool.dart';
 import 'package:reuteuteu/pages/list_day_off.dart';
 import 'package:reuteuteu/widgets/dialog_confirm_cancel.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
+
+enum Options { edit, delete }
 
 class PoolCardWidget extends StatefulWidget {
 
@@ -23,65 +24,81 @@ class PoolCardWidget extends StatefulWidget {
 }
 
 class _PoolCardWidgetState extends State<PoolCardWidget> {
+
+  RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              title: Text(widget.pool.name),
-              subtitle: Container(
-                  height: 100,
-                  child: SfLinearGauge(
-                      interval: widget.pool.maxDays,
-                      minimum: 0,
-                      maximum: widget.pool.maxDays,
-                      markerPointers: [
-                        LinearWidgetPointer(
-                          position: LinearElementPosition.outside,
-                          value: widget.pool.getAvailableDays(),
-                          offset: 15,
-                          child: Text(widget.pool.getAvailableDays().toString()),
+    return Card(
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) {
+                return ListDayOffPage(pool: widget.pool);
+              }),
+            );
+          },
+          child: Column(
+            children: [
+              ListTile(
+                // leading: Icon(Icons.arrow_drop_down_circle),
+                title: Text(widget.pool.name),
+                subtitle: Text("${widget.pool.getTotalTakenDays()} taken / ${widget.pool.maxDays}",
+                  style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                ),
+                trailing: PopupMenuButton(
+                    onSelected: (value) {
+                      _onMenuItemSelected(value as Options);
+                    },
+                    icon: Icon(Icons.more_vert),
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: Options.edit,
+                        child:  Row(
+                          children: const [
+                            Icon(Icons.edit),
+                            Text("Edit"),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: Options.delete,
+                        child:  Row(
+                          children: const [
+                            Icon(Icons.delete),
+                            Text("Delete"),
+                          ],
+                        ),
+                      )
+                    ]
+                ),
+
+              ),
+              Container(
+                constraints: const BoxConstraints(
+                    maxHeight: 80
+                ),
+                child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.pool.getAvailableDays().toString().replaceAll(regex, ''),
+                          style: const TextStyle(color: Colors.green, fontSize: 50, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "available",
+                          style: TextStyle(color: Colors.black.withOpacity(0.6)),
                         ),
                       ],
-                      barPointers: [
-                        LinearBarPointer(value: widget.pool.getAvailableDays(),
-                            color: Colors.green,
-                            thickness: 20)
-                      ]
-                  )
+                    )
+                ),
               ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => CreateOrEditPoolPage(isEdit: true, bucket: widget.bucket, pool: widget.pool, callback: widget.callback))
-                    ).then((_) => setState(() {}));
-                  }, icon: const Icon(Icons.edit)),
-                  IconButton(onPressed: () async {
-                    final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete pool '${widget.pool.name}'?", 'Confirm');
-                    if (action == DialogAction.confirmed) {
-                      _performRecursiveDeletion(widget.pool);
-                      widget.callback();
-                    }
-                  }, icon: const Icon(Icons.delete)),
-                ],
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return ListDayOffPage(pool: widget.pool);
-                  }),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        )
     );
   }
 
@@ -92,5 +109,20 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
       }
     }
     pool.delete();
+  }
+
+  Future<void> _onMenuItemSelected(Options value) async {
+    if (value == Options.edit) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => CreateOrEditPoolPage(isEdit: true, bucket: widget.bucket, pool: widget.pool, callback: widget.callback))
+      ).then((_) => setState(() {}));
+    }
+    if (value == Options.delete) {
+      final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete pool '${widget.pool.name}'?", 'Confirm');
+      if (action == DialogAction.confirmed) {
+        _performRecursiveDeletion(widget.pool);
+        widget.callback();
+      }
+    }
   }
 }

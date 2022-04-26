@@ -143,7 +143,7 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
   Future<void> _datePicker(BuildContext context) async {
     var initialDateRange = DateTimeRange(
         start: DateTime.now(),
-        end: DateTime.now().add(Duration(hours: 24))
+        end: DateTime.now().add(const Duration(hours: 24))
     );
     if (widget.isEdit){
       initialDateRange = DateTimeRange(
@@ -157,7 +157,6 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
       firstDate: DateTime(DateTime.now().year - 1),
       lastDate: DateTime(DateTime.now().year + 3),
     );
-    print(picked);
     if (picked != null){
       String dateStart = DateFormat('yyyy-MM-dd').format(picked.start);
       String dateEnd = DateFormat('yyyy-MM-dd').format(picked.end);
