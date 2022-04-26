@@ -24,6 +24,9 @@ class ConsumptionGauge extends StatelessWidget {
             radiusFactor: 0.8,
             minimum: 0,
             maximum: max,
+            showFirstLabel: false,
+            startAngle: 270,
+            endAngle: 270,
             axisLineStyle: const AxisLineStyle(
                 cornerStyle: CornerStyle.startCurve, thickness: 5),
             annotations: <GaugeAnnotation>[
@@ -38,35 +41,24 @@ class ConsumptionGauge extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               fontStyle: FontStyle.italic,
                               fontSize: 30)),
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(0, 2, 0, 0),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
                         child: Text(
-                          'days',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                          '/ $max',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.normal,
                               fontStyle: FontStyle.italic,
                               fontSize: 14),
                         ),
                       )
                     ],
                   )),
-              const GaugeAnnotation(
-                angle: 124,
-                positionFactor: 1.1,
-                widget: Text('0', style: TextStyle(fontSize: 14)),
-              ),
-              GaugeAnnotation(
-                angle: 54,
-                positionFactor: 1.1,
-                widget: Text(max.toString(),
-                    style: const TextStyle(fontSize: 14)),
-              ),
             ],
             pointers: <GaugePointer>[
               RangePointer(
                   value: available,
-                  width: 18,
-                  pointerOffset: -6,
+                  width: 12,
+                  pointerOffset: -3,
                   cornerStyle: CornerStyle.bothCurve,
                   color: Colors.green
               )
