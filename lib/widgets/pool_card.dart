@@ -10,14 +10,14 @@ enum Options { edit, delete }
 
 class PoolCardWidget extends StatefulWidget {
 
-  PoolCardWidget({
+  const PoolCardWidget({
     Key? key,
-    required this.pool, required this.callback, required this.bucket
+    required this.pool, required this.bucket, required this.callback
   }) : super(key: key);
 
   final VoidCallback callback;
-  Pool pool;
-  Bucket bucket;
+  final Pool pool;
+  final Bucket bucket;
 
   @override
   State<PoolCardWidget> createState() => _PoolCardWidgetState();
@@ -37,21 +37,20 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
               MaterialPageRoute(builder: (context) {
                 return ListDayOffPage(pool: widget.pool);
               }),
-            );
+            ).then((_) => setState(() { widget.callback();}));
           },
           child: Column(
             children: [
               ListTile(
-                // leading: Icon(Icons.arrow_drop_down_circle),
                 title: Text(widget.pool.name),
-                subtitle: Text("${widget.pool.getTotalTakenDays()} taken / ${widget.pool.maxDays}",
+                subtitle: Text("${widget.pool.getTotalTakenDays().toString().replaceAll(regex, '')} taken / ${widget.pool.maxDays}",
                   style: TextStyle(color: Colors.black.withOpacity(0.6)),
                 ),
                 trailing: PopupMenuButton(
                     onSelected: (value) {
                       _onMenuItemSelected(value as Options);
                     },
-                    icon: Icon(Icons.more_vert),
+                    icon: const Icon(Icons.more_vert),
                     itemBuilder: (context) => [
                       PopupMenuItem(
                         value: Options.edit,
@@ -114,8 +113,8 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
   Future<void> _onMenuItemSelected(Options value) async {
     if (value == Options.edit) {
       Navigator.push(context,
-          MaterialPageRoute(builder: (_) => CreateOrEditPoolPage(isEdit: true, bucket: widget.bucket, pool: widget.pool, callback: widget.callback))
-      ).then((_) => setState(() {}));
+          MaterialPageRoute(builder: (_) => CreateOrEditPoolPage(isEdit: true, bucket: widget.bucket, pool: widget.pool))
+      ).then((_) => setState(() {widget.callback();}));
     }
     if (value == Options.delete) {
       final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete pool '${widget.pool.name}'?", 'Confirm');

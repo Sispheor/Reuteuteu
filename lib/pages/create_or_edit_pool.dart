@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'package:reuteuteu/hive_boxes.dart';
 import 'package:reuteuteu/models/bucket.dart';
 import 'package:reuteuteu/models/pool.dart';
@@ -9,13 +10,12 @@ import 'package:reuteuteu/models/pool.dart';
 class CreateOrEditPoolPage extends StatefulWidget {
 
   final bool isEdit;
-  final VoidCallback callback;
   final Bucket bucket;
   final Pool? pool;
 
-  CreateOrEditPoolPage({
+  const CreateOrEditPoolPage({
     Key? key,
-    required this.isEdit, required this.bucket, this.pool, required this.callback
+    required this.isEdit, required this.bucket, this.pool
   }) : super(key: key);
 
   @override
@@ -96,7 +96,6 @@ class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
               }else{
                 await _persistPool();
               }
-              widget.callback();
               Navigator.pop(context);  // return to previous screen (main)
             }
           },
@@ -116,7 +115,10 @@ class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
     box.add(newPool);
     widget.bucket.pools!.add(newPool);
     widget.bucket.save();
-    // widget.callback();
+    // create empty dayOff list
+    final dayOffBox = Boxes.getDayOffs();
+    newPool.dayOffList = HiveList(dayOffBox);
+    newPool.save();
   }
 
   bool _isPoolNameExist(String value) {

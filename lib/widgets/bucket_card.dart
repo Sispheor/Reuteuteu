@@ -9,12 +9,12 @@ import 'package:reuteuteu/widgets/dialog_confirm_cancel.dart';
 
 class BucketCardWidget extends StatefulWidget {
 
-  const BucketCardWidget({
+  BucketCardWidget({
     Key? key,
     required this.bucket
   }) : super(key: key);
 
-  final Bucket bucket;
+  Bucket bucket;
 
   @override
   State<BucketCardWidget> createState() => _BucketCardWidgetState();

@@ -11,12 +11,11 @@ class CreateOrEditDayOffPage extends StatefulWidget {
 
   final bool isEdit;
   final Pool pool;
-  final VoidCallback callback;
   final DayOff? dayOff;
 
   const CreateOrEditDayOffPage({
     Key? key,
-    required this.isEdit, required this.pool, required this.callback, this.dayOff
+    required this.isEdit, required this.pool, this.dayOff
   }) : super(key: key);
 
   @override
@@ -130,7 +129,6 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
               }else{
                 await _persistDayOff();
               }
-              widget.callback();
               Navigator.pop(context);  // return to previous screen (main)
             }
           },
@@ -178,7 +176,6 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
     box.add(newDayOff);
     widget.pool.dayOffList!.add(newDayOff);
     widget.pool.save();
-    widget.callback();
   }
 
   _updateDayOff(DayOff dayOffToUpdate) {
@@ -187,7 +184,6 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
     dayOffToUpdate.dateEnd = dayOffDateEnd!;
     dayOffToUpdate.isHalfDay = isHalfDay;
     dayOffToUpdate.save();
-
   }
 
 }

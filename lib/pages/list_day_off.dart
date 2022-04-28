@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:reuteuteu/hive_boxes.dart';
@@ -10,9 +12,9 @@ import 'package:reuteuteu/widgets/day_off_card.dart';
 
 class ListDayOffPage extends StatefulWidget {
 
-  Pool pool;
+  final Pool pool;
 
-  ListDayOffPage({Key? key,
+  const ListDayOffPage({Key? key,
     required this.pool}) : super(key: key);
 
   @override
@@ -21,29 +23,11 @@ class ListDayOffPage extends StatefulWidget {
 
 class _ListDayOffPageState extends State<ListDayOffPage>{
 
-  List<DayOff> listDayOffs = [];
-  late Pool? currentPoolUpdated = Boxes.getPools().get(widget.pool.key);
-
-  void getDayOffs() {
-    currentPoolUpdated = Boxes.getPools().get(widget.pool.key);
-    currentPoolUpdated!.save();
-    if (currentPoolUpdated != null && currentPoolUpdated!.dayOffList != null){
-      if (currentPoolUpdated!.dayOffList!.isNotEmpty){
-        setState(() {
-          listDayOffs = currentPoolUpdated!.dayOffList!.castHiveList().cast<DayOff>();
-        });
-      }else{
-        setState(() {
-          listDayOffs = [];
-        });
-      }
-    }
-  }
-
-  @override
-  void initState() {
-    getDayOffs();
-    super.initState();
+  callback(){
+    setState(() {
+      // this debug force the update of the widget
+      log("New day off list length: ${widget.pool.dayOffList?.length}");
+    });
   }
 
   @override
@@ -56,26 +40,25 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
             icon: const Icon(Icons.add),
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(isEdit: false, pool: widget.pool, callback: getDayOffs))
-              ).then((_) => setState(() {}));
+                  MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(isEdit: false, pool: widget.pool))).then((_) => setState(() {}));
             },
           )
         ],
       ),
       body: Column(
         children: [
+          if (widget.pool.dayOffList != null && widget.pool.dayOffList!.isNotEmpty)
           Card(
-              // margin: const EdgeInsets.all(10.0),
-              child: Container(
+              child: SizedBox(
                   height: 150,
-                  // child: _buildGauge(currentPoolUpdated!)
-                  child: ConsumptionGauge(max: currentPoolUpdated!.maxDays, available: currentPoolUpdated!.getAvailableDays())
+                  child: ConsumptionGauge(max: widget.pool.maxDays, available: widget.pool.getAvailableDays())
               )
           ),
           Expanded(
-            child: ValueListenableBuilder<Box<Pool>>(
-              valueListenable: Boxes.getPools().listenable(),
+            child: ValueListenableBuilder<Box<DayOff>>(
+              valueListenable: Boxes.getDayOffs().listenable(),
               builder: (context, box, _) {
+                final listDayOffs = box.values.where((element) => widget.pool.dayOffList!.contains(element));
                 if (listDayOffs.isEmpty) {
                   return const Center(
                     child: Text(
@@ -85,8 +68,7 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
                   );
                 }else{
                   return ListView(
-                    // children: widget.pool.dayOffList!.castHiveList().cast<DayOff>().map((dayOff) => DayOffCardWidget(dayOff: dayOff)).toList(),
-                    children: listDayOffs.map((dayOff) => DayOffCardWidget(dayOff: dayOff, pool: widget.pool, callback: getDayOffs)).toList(),
+                    children: listDayOffs.map((dayOff) => DayOffCardWidget(dayOff: dayOff, pool: widget.pool, callback: callback)).toList(),
                   );
                 }
               },

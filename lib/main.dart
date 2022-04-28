@@ -26,8 +26,8 @@ void main() async {
   bucketBox.addAll([bucket2021]);
 
   // create pools
-  var payedVacation = Pool("payed_vacation", 25);
-  var rtt = Pool("rtt", 10);
+  var payedVacation = Pool("CP", 25);
+  var rtt = Pool("RTT", 10);
   poolBox.addAll([payedVacation, rtt]);  // add the pools to the database
   bucket2021.pools = HiveList(poolBox);  // create a HiveList
   bucket2021.pools?.addAll([payedVacation, rtt]);

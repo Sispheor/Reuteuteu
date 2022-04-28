@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:reuteuteu/hive_boxes.dart';
@@ -22,29 +24,11 @@ class ListPoolPage extends StatefulWidget {
 
 class _ListPoolPageState extends State<ListPoolPage>{
 
-  List<Pool> listPools = [];
-  late Bucket? currentBucketUpdated = Boxes.getBuckets().get(widget.bucket.key);
-
-  void getPools() {
-    currentBucketUpdated = Boxes.getBuckets().get(widget.bucket.key);
-    currentBucketUpdated!.save();
-    if (currentBucketUpdated != null && currentBucketUpdated!.pools != null){
-      if (currentBucketUpdated!.pools!.isNotEmpty){
-        setState(() {
-          listPools = currentBucketUpdated!.pools!.castHiveList().cast<Pool>();
-        });
-      }else{
-        setState(() {
-          listPools = [];
-        });
-      }
-    }
-  }
-
-  @override
-  void initState() {
-    getPools();
-    super.initState();
+  callback(){
+    setState(() {
+      // this debug force the update of the widget
+      log("New pool length: ${widget.bucket.pools?.length}");
+    });
   }
 
   @override
@@ -57,26 +41,26 @@ class _ListPoolPageState extends State<ListPoolPage>{
             icon: const Icon(Icons.add),
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => CreateOrEditPoolPage(isEdit: false, bucket: widget.bucket, callback: getPools)));
+                  MaterialPageRoute(builder: (_) => CreateOrEditPoolPage(isEdit: false, bucket: widget.bucket))).then((_) => setState(() {}));
             },
           )
         ],
       ),
       body: Column(
             children: [
-              if (listPools.isNotEmpty)
-                Card(
-                  // margin: const EdgeInsets.all(10.0),
-                    child: Container(
-                        height: 150,
-                        child: ConsumptionGauge(max: currentBucketUpdated!.getPoolMaxDays(), available: currentBucketUpdated!.getAvailable())
-                    )
-                ),
+              if (widget.bucket.pools!.isNotEmpty)
+              Card(
+                  child: SizedBox(
+                      height: 150,
+                      child: ConsumptionGauge(max: widget.bucket.getPoolMaxDays(), available: widget.bucket.getAvailable())
+                  )
+              ),
               Expanded(
                 child: ValueListenableBuilder<Box<Pool>>(
                   valueListenable: Boxes.getPools().listenable(),
                   builder: (context, box, _) {
-                    if (listPools.isEmpty) {
+                    final pools = box.values.where((element) => widget.bucket.pools!.contains(element));
+                    if (pools.isEmpty) {
                       return const Center(
                         child: Text(
                           'No pool yet',
@@ -87,7 +71,7 @@ class _ListPoolPageState extends State<ListPoolPage>{
                       return  ListView(
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
-                        children: listPools.map((pool) => PoolCardWidget(bucket: widget.bucket, pool: pool, callback: getPools)).toList(),
+                        children: pools.cast<Pool>().map((pool) => PoolCardWidget(bucket: widget.bucket, pool: pool, callback: callback)).toList(),
                       );
                     }
                   },
