@@ -6,6 +6,8 @@ import 'package:reuteuteu/pages/create_or_edit_day_off.dart';
 import 'package:reuteuteu/widgets/dialog_confirm_cancel.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
+enum Options { edit, delete }
+
 class DayOffCardWidget extends StatefulWidget {
 
   final DayOff dayOff;
@@ -23,6 +25,9 @@ class DayOffCardWidget extends StatefulWidget {
 }
 
 class _DayOffCardWidgetState extends State<DayOffCardWidget> {
+
+  RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -31,38 +36,66 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              leading: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.green,
-                  child: Text(widget.dayOff.getTotalTakenDays().toString(),
-                      style: const TextStyle(color: Colors.white))),
               title: Text(widget.dayOff.name),
               subtitle: widget.dayOff.isHalfDay == true?
                         const Text("Half days"): null,
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(isEdit: true, pool: widget.pool, dayOff: widget.dayOff))
-                    ).then((_) => setState(() { widget.callback();}));
-                  }, icon: const Icon(Icons.edit)),
-                  IconButton(onPressed: () async {
-                    final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete day off '${widget.dayOff.name}'?", 'Confirm');
-                    if (action == DialogAction.confirmed) {
-                      widget.dayOff.delete();
-                      widget.callback();
-                    }
-                  }, icon: const Icon(Icons.delete)),
-                ],
+              trailing: PopupMenuButton(
+                  onSelected: (value) {
+                    _onMenuItemSelected(value as Options);
+                  },
+                  icon: const Icon(Icons.more_vert),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: Options.edit,
+                      child:  Row(
+                        children: const [
+                          Icon(Icons.edit),
+                          Text("Edit"),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: Options.delete,
+                      child:  Row(
+                        children: const [
+                          Icon(Icons.delete),
+                          Text("Delete"),
+                        ],
+                      ),
+                    )
+                  ]
               ),
             ),
-            // _TimelineTileStartEnd(dayOff: widget.dayOff)
-            _TimeLine(dayOff: widget.dayOff)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.green,
+                    child: Text(widget.dayOff.getTotalTakenDays().toString().replaceAll(regex, ''),
+                        style: const TextStyle(color: Colors.white))),
+                _TimeLine(dayOff: widget.dayOff)
+              ],
+            )
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _onMenuItemSelected(Options value) async {
+    if (value == Options.edit) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(isEdit: true, pool: widget.pool, dayOff: widget.dayOff))
+      ).then((_) => setState(() { widget.callback();}));
+    }
+    if (value == Options.delete) {
+      final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete pool '${widget.pool.name}'?", 'Confirm');
+      if (action == DialogAction.confirmed) {
+        widget.dayOff.delete();
+        widget.callback();
+      }
+    }
   }
 
 }
