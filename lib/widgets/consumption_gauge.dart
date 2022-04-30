@@ -60,7 +60,7 @@ class ConsumptionGauge extends StatelessWidget {
                   width: 12,
                   pointerOffset: -3,
                   cornerStyle: CornerStyle.bothCurve,
-                  color: Colors.green
+                  color: Colors.white
               )
 
             ]),

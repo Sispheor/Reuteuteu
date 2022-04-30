@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive/hive.dart';
 import 'package:reuteuteu/hive_boxes.dart';
 import 'package:reuteuteu/models/bucket.dart';
@@ -45,6 +46,7 @@ class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
 
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: NordColors.polarNight.darkest,
           title: Text(title),
         ),
         body: Container(
@@ -100,7 +102,7 @@ class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
             }
           },
           child: const Icon(Icons.done),
-          backgroundColor: Colors.green,
+          backgroundColor: NordColors.frost.lighter,
         )
     );
   }

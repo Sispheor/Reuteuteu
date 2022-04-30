@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:intl/intl.dart';
 import 'package:reuteuteu/hive_boxes.dart';
 import 'package:reuteuteu/models/day_off.dart';
@@ -56,6 +57,7 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
 
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: NordColors.polarNight.darkest,
           title: Text(title),
         ),
         body: Container(
@@ -133,7 +135,7 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
             }
           },
           child: const Icon(Icons.done),
-          backgroundColor: Colors.green,
+          backgroundColor: NordColors.frost.lighter,
         )
     );
   }

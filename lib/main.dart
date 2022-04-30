@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:reuteuteu/pages/homepage.dart';
 
@@ -60,10 +61,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Reuteuteu',
-      theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
-      ),
+      title: 'Sloth',
+      themeMode: ThemeMode.dark, // Or [ThemeMode.dark]
+      theme: NordTheme.light(),
+      darkTheme: NordTheme.dark(),
       home: const HomePage(),
     );
   }

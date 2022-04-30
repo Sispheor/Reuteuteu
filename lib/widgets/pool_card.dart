@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:reuteuteu/models/bucket.dart';
 import 'package:reuteuteu/models/day_off.dart';
 import 'package:reuteuteu/models/pool.dart';
@@ -42,9 +43,9 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
           child: Column(
             children: [
               ListTile(
-                title: Text(widget.pool.name),
+                title: Text(widget.pool.name, style: TextStyle(color: NordColors.frost.lighter, fontWeight: FontWeight.bold)),
                 subtitle: Text("${widget.pool.getTotalTakenDays().toString().replaceAll(regex, '')} taken / ${widget.pool.maxDays}",
-                  style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                  style: TextStyle(color: Colors.white.withOpacity(0.6)),
                 ),
                 trailing: PopupMenuButton(
                     onSelected: (value) {
@@ -85,11 +86,11 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
                       children: [
                         Text(
                           widget.pool.getAvailableDays().toString().replaceAll(regex, ''),
-                          style: const TextStyle(color: Colors.green, fontSize: 50, fontWeight: FontWeight.bold),
+                          style: TextStyle(color: NordColors.frost.lighter, fontSize: 50, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          "available",
-                          style: TextStyle(color: Colors.black.withOpacity(0.6)),
+                          "days available",
+                          style: TextStyle(color: Colors.white.withOpacity(0.6)),
                         ),
                       ],
                     )

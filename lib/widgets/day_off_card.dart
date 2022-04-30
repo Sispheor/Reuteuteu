@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:intl/intl.dart';
 import 'package:reuteuteu/models/day_off.dart';
 import 'package:reuteuteu/models/pool.dart';
@@ -36,7 +37,7 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              title: Text(widget.dayOff.name),
+              title: Text(widget.dayOff.name, style: TextStyle(color: NordColors.frost.lighter, fontWeight: FontWeight.bold)),
               subtitle: widget.dayOff.isHalfDay == true?
                         const Text("Half days"): null,
               trailing: PopupMenuButton(
@@ -71,7 +72,7 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
               children: [
                 CircleAvatar(
                     radius: 30,
-                    backgroundColor: Colors.green,
+                    backgroundColor: NordColors.frost.lighter,
                     child: Text(widget.dayOff.getTotalTakenDays().toString().replaceAll(regex, ''),
                         style: const TextStyle(color: Colors.white))),
                 _TimeLine(dayOff: widget.dayOff)
@@ -126,7 +127,7 @@ class _TimeLine extends StatelessWidget {
             minimum: 0,
             maximum: 1,
             interval: 1,
-            barPointers: const [LinearBarPointer(value: 1, color: Colors.green)],
+            barPointers: [LinearBarPointer(value: 1, color: NordColors.frost.lighter)],
             markerPointers: [
               for (double i=0; i<2; i++)
                 LinearWidgetPointer(
@@ -134,7 +135,7 @@ class _TimeLine extends StatelessWidget {
                   child: Container(
                       height: 10,
                       width: 10,
-                      decoration: const BoxDecoration(color: Colors.green,
+                      decoration: BoxDecoration(color: NordColors.frost.lighter,
                           shape: BoxShape.circle)
                   ),
                 ),
@@ -162,8 +163,8 @@ class _TimeLine extends StatelessWidget {
                 child: Icon(Icons.calendar_today, size: 15),
               ),
               TextSpan(
-                text: text,
-                style: const TextStyle(color: Colors.black),
+                text: " $text",
+                style: const TextStyle(color: Colors.white),
               ),
             ],
           ),

@@ -1,3 +1,4 @@
+import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:reuteuteu/hive_boxes.dart';
@@ -20,7 +21,8 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Reuteuteu"),
+          backgroundColor: NordColors.polarNight.darkest,
+          title: const Text("Sloth"),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.add),

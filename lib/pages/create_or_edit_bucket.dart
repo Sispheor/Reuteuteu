@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:reuteuteu/hive_boxes.dart';
@@ -41,6 +42,7 @@ class _CreateOrEditDayOffPage  extends State<CreateOrEditBucketPage> {
 
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: NordColors.polarNight.darkest,
           title: Text(title),
         ),
         body: Container(
@@ -88,7 +90,7 @@ class _CreateOrEditDayOffPage  extends State<CreateOrEditBucketPage> {
             }
           },
           child: const Icon(Icons.done),
-          backgroundColor: Colors.green,
+          backgroundColor: NordColors.frost.lighter,
         )
     );
 

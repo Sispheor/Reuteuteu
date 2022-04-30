@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:reuteuteu/hive_boxes.dart';
@@ -34,6 +35,7 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: NordColors.polarNight.darkest,
         title: Text("Pool ${widget.pool.name}"),
         actions: <Widget>[
           IconButton(

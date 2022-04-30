@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:reuteuteu/hive_boxes.dart';
 import 'package:reuteuteu/models/bucket.dart';
@@ -49,6 +50,7 @@ class _ListPoolPageState extends State<ListPoolPage>{
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: NordColors.polarNight.darkest,
         title: Text("Bucket ${widget.bucket.name}"),
         actions: <Widget>[
           IconButton(
