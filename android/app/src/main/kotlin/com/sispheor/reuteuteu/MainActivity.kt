@@ -1,4 +1,4 @@
-package com.sispheor.reuteuteu
+package com.sispheor.sloth_day
 
 import io.flutter.embedding.android.FlutterActivity
 

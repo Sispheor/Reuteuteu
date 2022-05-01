@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:reuteuteu/models/bucket.dart';
-import 'package:reuteuteu/models/day_off.dart';
-import 'package:reuteuteu/models/pool.dart';
-import 'package:reuteuteu/pages/create_or_edit_bucket.dart';
-import 'package:reuteuteu/pages/homepage.dart';
-import 'package:reuteuteu/widgets/dialog_confirm_cancel.dart';
+import 'package:sloth_day/models/bucket.dart';
+import 'package:sloth_day/models/day_off.dart';
+import 'package:sloth_day/models/pool.dart';
+import 'package:sloth_day/pages/create_or_edit_bucket.dart';
+import 'package:sloth_day/pages/homepage.dart';
+import 'package:sloth_day/widgets/dialog_confirm_cancel.dart';
 
 enum Options { edit, delete }
 

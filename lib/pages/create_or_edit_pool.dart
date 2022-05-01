@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive/hive.dart';
-import 'package:reuteuteu/hive_boxes.dart';
-import 'package:reuteuteu/models/bucket.dart';
-import 'package:reuteuteu/models/pool.dart';
+import 'package:sloth_day/hive_boxes.dart';
+import 'package:sloth_day/models/bucket.dart';
+import 'package:sloth_day/models/pool.dart';
 
 class CreateOrEditPoolPage extends StatefulWidget {
 

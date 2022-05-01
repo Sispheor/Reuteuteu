@@ -1,6 +1,6 @@
-import 'package:reuteuteu/models/day_off.dart';
-import 'package:reuteuteu/models/pool.dart';
-import 'package:reuteuteu/models/bucket.dart';
+import 'package:sloth_day/models/day_off.dart';
+import 'package:sloth_day/models/pool.dart';
+import 'package:sloth_day/models/bucket.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_test/hive_test.dart';

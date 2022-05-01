@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:reuteuteu/hive_boxes.dart';
-import 'package:reuteuteu/models/bucket.dart';
-import 'package:reuteuteu/models/day_off.dart';
-import 'package:reuteuteu/models/pool.dart';
-import 'package:reuteuteu/widgets/day_off_card.dart';
+import 'package:sloth_day/hive_boxes.dart';
+import 'package:sloth_day/models/bucket.dart';
+import 'package:sloth_day/models/day_off.dart';
+import 'package:sloth_day/models/pool.dart';
+import 'package:sloth_day/widgets/day_off_card.dart';
 
 class ListDayOff extends StatefulWidget{
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:reuteuteu/pages/list_bucket.dart';
+import 'package:sloth_day/pages/list_bucket.dart';
 
 import 'models/bucket.dart';
 import 'models/day_off.dart';

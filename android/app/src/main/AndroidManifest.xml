@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sispheor.reuteuteu">
+    package="com.sispheor.sloth_day">
    <application
-        android:label="reuteuteu"
+        android:label="sloth_day"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

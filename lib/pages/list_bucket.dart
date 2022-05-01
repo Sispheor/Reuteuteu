@@ -1,9 +1,9 @@
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:reuteuteu/hive_boxes.dart';
-import 'package:reuteuteu/pages/create_or_edit_bucket.dart';
-import 'package:reuteuteu/widgets/bucket_card.dart';
+import 'package:sloth_day/hive_boxes.dart';
+import 'package:sloth_day/pages/create_or_edit_bucket.dart';
+import 'package:sloth_day/widgets/bucket_card.dart';
 
 import '../models/bucket.dart';
 

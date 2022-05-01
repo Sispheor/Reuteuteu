@@ -1,4 +1,4 @@
-import 'package:reuteuteu/models/day_off.dart';
+import 'package:sloth_day/models/day_off.dart';
 import 'package:hive/hive.dart';
 part 'pool.g.dart';
 

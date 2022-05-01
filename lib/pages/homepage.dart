@@ -1,10 +1,10 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
-import 'package:reuteuteu/models/bucket.dart';
-import 'package:reuteuteu/pages/create_or_edit_pool.dart';
-import 'package:reuteuteu/pages/list_all_day_off_in_bucket.dart';
-import 'package:reuteuteu/pages/list_pool.dart';
+import 'package:sloth_day/models/bucket.dart';
+import 'package:sloth_day/pages/create_or_edit_pool.dart';
+import 'package:sloth_day/pages/list_all_day_off_in_bucket.dart';
+import 'package:sloth_day/pages/list_pool.dart';
 
 
 class HomePage extends StatefulWidget {

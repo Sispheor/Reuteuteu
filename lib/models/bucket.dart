@@ -1,4 +1,4 @@
-import 'package:reuteuteu/models/pool.dart';
+import 'package:sloth_day/models/pool.dart';
 import 'package:hive/hive.dart';
 part 'bucket.g.dart';
 

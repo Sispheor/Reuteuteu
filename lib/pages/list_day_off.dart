@@ -3,12 +3,12 @@ import 'dart:developer';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:reuteuteu/hive_boxes.dart';
-import 'package:reuteuteu/models/day_off.dart';
-import 'package:reuteuteu/models/pool.dart';
-import 'package:reuteuteu/pages/create_or_edit_day_off.dart';
-import 'package:reuteuteu/widgets/consumption_gauge.dart';
-import 'package:reuteuteu/widgets/day_off_card.dart';
+import 'package:sloth_day/hive_boxes.dart';
+import 'package:sloth_day/models/day_off.dart';
+import 'package:sloth_day/models/pool.dart';
+import 'package:sloth_day/pages/create_or_edit_day_off.dart';
+import 'package:sloth_day/widgets/consumption_gauge.dart';
+import 'package:sloth_day/widgets/day_off_card.dart';
 
 
 class ListDayOffPage extends StatefulWidget {

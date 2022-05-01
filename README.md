@@ -1,4 +1,4 @@
-# reuteuteu
+# sloth_day
 
 Simple day off tracker
 

@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:intl/intl.dart';
-import 'package:reuteuteu/hive_boxes.dart';
-import 'package:reuteuteu/models/day_off.dart';
-import 'package:reuteuteu/models/pool.dart';
-import 'package:reuteuteu/utils/widget_utils.dart';
+import 'package:sloth_day/hive_boxes.dart';
+import 'package:sloth_day/models/day_off.dart';
+import 'package:sloth_day/models/pool.dart';
+import 'package:sloth_day/utils/widget_utils.dart';
 
 class CreateOrEditDayOffPage extends StatefulWidget {
 
