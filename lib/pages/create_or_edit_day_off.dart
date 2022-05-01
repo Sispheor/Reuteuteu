@@ -50,7 +50,7 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
         String dateStart = DateFormat('yyyy-MM-dd').format(widget.dayOff!.dateStart);
         String dateEnd = DateFormat('yyyy-MM-dd').format(widget.dayOff!.dateEnd);
         dateRangeController.text = "$dateStart → $dateEnd";
-        title = "Edit '${widget.pool.name}'";
+        title = "Edit day off '${widget.dayOff!.name}'";
         firstTimeEdit = false;
       }
     }

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:sloth_day/models/bucket.dart';
+import 'package:sloth_day/pages/calendar_view.dart';
 import 'package:sloth_day/pages/create_or_edit_pool.dart';
 import 'package:sloth_day/pages/list_all_day_off_in_bucket.dart';
 import 'package:sloth_day/pages/list_pool.dart';
@@ -36,10 +37,7 @@ class _HomePageState extends State<HomePage>{
 
     List<Widget> _pages = <Widget>[
       ListPool(bucket: widget.bucket),
-      const Icon(
-        Icons.camera,
-        size: 150,
-      ),
+      CalendarPage(bucket: widget.bucket),
       ListDayOff(bucket: widget.bucket),
     ];
 
@@ -95,3 +93,5 @@ class _HomePageState extends State<HomePage>{
     });
   }
 }
+
+

@@ -35,7 +35,6 @@ class _ListDayOffState extends State<ListDayOff> {
     return ValueListenableBuilder<Box<DayOff>>(
       valueListenable: Boxes.getDayOffs().listenable(),
       builder: (context, box, _) {
-        // final daysOff = box.values.toList().cast<DayOff>();
         final daysOff = box.values.where((dayOff) => isDayOffPartOfTheCurrentBucket(dayOff));
         if (daysOff.isEmpty) {
           return const Center(
