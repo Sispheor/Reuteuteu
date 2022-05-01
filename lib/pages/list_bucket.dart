@@ -22,7 +22,7 @@ class _ListBucketPageState extends State<ListBucketPage> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: NordColors.polarNight.darkest,
-          title: const Text("Sloth"),
+          title: const Text("SlothDay"),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.add),
@@ -33,25 +33,34 @@ class _ListBucketPageState extends State<ListBucketPage> {
             )
           ],
         ),
-        body: ValueListenableBuilder<Box<Bucket>>(
-          valueListenable: Boxes.getBuckets().listenable(),
-          builder: (context, box, _) {
-            final buckets = box.values.toList().cast<Bucket>();
-            if (buckets.isEmpty) {
-              return const Center(
-                child: Text(
-                  'No buckets yet',
-                  style: TextStyle(fontSize: 24),
-                ),
-              );
-            }else{
-              return ListView(
-                children: buckets.map((bucket) => BucketCardWidget(bucket: bucket)).toList(),
-              );
-            }
+        body: Container(
+          constraints: BoxConstraints.expand(),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/images/sloth.png"),
+                fit: BoxFit.fitWidth),
+          ),
+          child: ValueListenableBuilder<Box<Bucket>>(
+            valueListenable: Boxes.getBuckets().listenable(),
+            builder: (context, box, _) {
+              final buckets = box.values.toList().cast<Bucket>();
+              if (buckets.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'No buckets yet',
+                    style: TextStyle(fontSize: 24),
+                  ),
+                );
+              }else{
+                return ListView(
+                  children: buckets.map((bucket) => BucketCardWidget(bucket: bucket)).toList(),
+                );
+              }
 
-          },
-        ),
+            },
+          ),
+        )
+
       ),
     );
   }

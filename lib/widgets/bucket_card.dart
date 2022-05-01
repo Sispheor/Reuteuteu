@@ -6,6 +6,8 @@ import 'package:reuteuteu/pages/create_or_edit_bucket.dart';
 import 'package:reuteuteu/pages/homepage.dart';
 import 'package:reuteuteu/widgets/dialog_confirm_cancel.dart';
 
+enum Options { edit, delete }
+
 class BucketCardWidget extends StatefulWidget {
 
   BucketCardWidget({
@@ -29,21 +31,31 @@ class _BucketCardWidgetState extends State<BucketCardWidget> {
           children: <Widget>[
             ListTile(
               title: Text(widget.bucket.name),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => CreateOrEditBucketPage(isEdit: true, bucket: widget.bucket))
-                    ).then((_) => setState(() {}));
-                  }, icon: const Icon(Icons.edit)),
-                  IconButton(onPressed: () async {
-                    final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete bucket '${widget.bucket.name}'?", 'Confirm');
-                    if (action == DialogAction.confirmed) {
-                      _performRecursiveDeletion(widget.bucket);
-                    }
-                  }, icon: const Icon(Icons.delete)),
-                ],
+              trailing: PopupMenuButton(
+                  onSelected: (value) {
+                    _onMenuItemSelected(value as Options);
+                  },
+                  icon: const Icon(Icons.more_vert),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: Options.edit,
+                      child:  Row(
+                        children: const [
+                          Icon(Icons.edit),
+                          Text("Edit"),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: Options.delete,
+                      child:  Row(
+                        children: const [
+                          Icon(Icons.delete),
+                          Text("Delete"),
+                        ],
+                      ),
+                    )
+                  ]
               ),
               onTap: () {
                   Navigator.push(
@@ -58,6 +70,20 @@ class _BucketCardWidgetState extends State<BucketCardWidget> {
         ),
       ),
     );
+  }
+
+  Future<void> _onMenuItemSelected(Options value) async {
+    if (value == Options.edit) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => CreateOrEditBucketPage(isEdit: true, bucket: widget.bucket))
+      ).then((_) => setState(() {}));
+    }
+    if (value == Options.delete) {
+      final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete bucket '${widget.bucket.name}'?", 'Confirm');
+      if (action == DialogAction.confirmed) {
+        _performRecursiveDeletion(widget.bucket);
+      }
+    }
   }
 
   void _performRecursiveDeletion(Bucket bucket) {
