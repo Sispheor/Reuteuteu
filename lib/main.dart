@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:reuteuteu/pages/homepage.dart';
+import 'package:reuteuteu/pages/list_bucket.dart';
 
 import 'models/bucket.dart';
 import 'models/day_off.dart';
@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.dark, // Or [ThemeMode.dark]
       theme: NordTheme.light(),
       darkTheme: NordTheme.dark(),
-      home: const HomePage(),
+      home: const ListBucketPage(),
     );
   }
 }
