@@ -37,7 +37,7 @@ class _ListBucketPageState extends State<ListBucketPage> {
           constraints: BoxConstraints.expand(),
           decoration: const BoxDecoration(
             image: DecorationImage(
-                image: AssetImage("assets/images/sloth.png"),
+                image: AssetImage("assets/images/sloth5.png"),
                 fit: BoxFit.fitWidth),
           ),
           child: ValueListenableBuilder<Box<Bucket>>(

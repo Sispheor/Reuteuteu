@@ -50,9 +50,16 @@ class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
           title: Text(title),
         ),
         body: Container(
+            constraints: BoxConstraints.expand(),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/images/sloth2.png"),
+                fit: BoxFit.fitWidth,
+                alignment: Alignment.bottomCenter,),
+            ),
             padding: const EdgeInsets.all(40.0),
             child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Form(key: _formKey,
                       child: Column(
@@ -102,7 +109,7 @@ class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
             }
           },
           child: const Icon(Icons.done),
-          backgroundColor: NordColors.frost.lighter,
+          backgroundColor: Colors.green,
         )
     );
   }

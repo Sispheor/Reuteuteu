@@ -37,7 +37,7 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              title: Text(widget.dayOff.name, style: TextStyle(color: NordColors.frost.lighter, fontWeight: FontWeight.bold)),
+              title: Text(widget.dayOff.name, style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
               subtitle: widget.dayOff.isHalfDay == true?
                         const Text("Half days"): null,
               trailing: PopupMenuButton(
@@ -72,7 +72,7 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
               children: [
                 CircleAvatar(
                     radius: 30,
-                    backgroundColor: NordColors.frost.lighter,
+                    backgroundColor: Colors.green,
                     child: Text(widget.dayOff.getTotalTakenDays().toString().replaceAll(regex, ''),
                         style: const TextStyle(color: Colors.white))),
                 _TimeLine(dayOff: widget.dayOff)
@@ -127,7 +127,7 @@ class _TimeLine extends StatelessWidget {
             minimum: 0,
             maximum: 1,
             interval: 1,
-            barPointers: [LinearBarPointer(value: 1, color: NordColors.frost.lighter)],
+            barPointers: [LinearBarPointer(value: 1, color: Colors.green)],
             markerPointers: [
               for (double i=0; i<2; i++)
                 LinearWidgetPointer(
@@ -135,7 +135,7 @@ class _TimeLine extends StatelessWidget {
                   child: Container(
                       height: 10,
                       width: 10,
-                      decoration: BoxDecoration(color: NordColors.frost.lighter,
+                      decoration: BoxDecoration(color: Colors.green,
                           shape: BoxShape.circle)
                   ),
                 ),

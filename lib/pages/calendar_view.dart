@@ -22,15 +22,40 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
+    return SafeArea(
+        child: Container(
+            constraints: BoxConstraints.expand(),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                  scale: 6,
+                  alignment: Alignment.bottomCenter,
+                image: AssetImage("assets/images/sloth1.png"),
+                ),
+            ),
+            child: SfCalendar(
+              view: CalendarView.month,
+              firstDayOfWeek: 1, // Monday
+              showDatePickerButton: true,
+              monthViewSettings: const MonthViewSettings(showAgenda: true,
+                agendaItemHeight: 50,
+                appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
+              ),
+              dataSource: DayOffDataSource(_getDataSource()),
+              onTap: calendarTapped,
+            )
+        ));
+
     return  SfCalendar(
-        view: CalendarView.month,
-        firstDayOfWeek: 1, // Monday
-        showDatePickerButton: true,
-        monthViewSettings: const MonthViewSettings(showAgenda: true,
-            agendaItemHeight: 50, appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
-        dataSource: DayOffDataSource(_getDataSource()),
-        onTap: calendarTapped,
-      );
+      view: CalendarView.month,
+      firstDayOfWeek: 1, // Monday
+      showDatePickerButton: true,
+      monthViewSettings: const MonthViewSettings(showAgenda: true,
+        agendaItemHeight: 50,
+        appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
+      ),
+      dataSource: DayOffDataSource(_getDataSource()),
+      onTap: calendarTapped,
+    );
   }
 
   void calendarTapped(CalendarTapDetails details) {

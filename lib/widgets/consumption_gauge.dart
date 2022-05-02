@@ -38,6 +38,7 @@ class ConsumptionGauge extends StatelessWidget {
                     children: <Widget>[
                       Text(available.toString(),
                           style: const TextStyle(
+                              color: Colors.green,
                               fontWeight: FontWeight.bold,
                               fontStyle: FontStyle.italic,
                               fontSize: 30)),

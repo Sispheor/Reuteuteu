@@ -43,7 +43,7 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
           child: Column(
             children: [
               ListTile(
-                title: Text(widget.pool.name, style: TextStyle(color: NordColors.frost.lighter, fontWeight: FontWeight.bold)),
+                title: Text(widget.pool.name, style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                 subtitle: Text("${widget.pool.getTotalTakenDays().toString().replaceAll(regex, '')} taken / ${widget.pool.maxDays}",
                   style: TextStyle(color: Colors.white.withOpacity(0.6)),
                 ),
@@ -86,7 +86,7 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
                       children: [
                         Text(
                           widget.pool.getAvailableDays().toString().replaceAll(regex, ''),
-                          style: TextStyle(color: NordColors.frost.lighter, fontSize: 50, fontWeight: FontWeight.bold),
+                          style: TextStyle(color: Colors.green, fontSize: 50, fontWeight: FontWeight.bold),
                         ),
                         Text(
                           "days available",

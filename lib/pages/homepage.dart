@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage>{
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedIconTheme: IconThemeData(color: NordColors.frost.lighter, size: 40),
+        selectedIconTheme: IconThemeData(color: Colors.green, size: 40),
       ),
     );
   }
