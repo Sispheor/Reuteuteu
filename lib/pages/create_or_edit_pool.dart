@@ -131,8 +131,8 @@ class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
   }
 
   bool _isPoolNameExist(String value) {
-    final box = Boxes.getPools();
-    for (Pool existingPool in box.values.toList().cast<Pool>()){
+    final box = Boxes.getPools().values.where((element) => widget.bucket.pools!.contains(element));
+    for (Pool existingPool in box.toList().cast<Pool>()){
       if (value == existingPool.name){
         return true;
       }
