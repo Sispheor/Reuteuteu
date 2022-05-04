@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:intl/intl.dart';
 import 'package:sloth_day/models/day_off.dart';
 import 'package:sloth_day/models/pool.dart';
 import 'package:sloth_day/pages/create_or_edit_day_off.dart';
 import 'package:sloth_day/widgets/dialog_confirm_cancel.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 enum Options { edit, delete }
 
@@ -29,6 +27,7 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
 
   RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
 
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -37,9 +36,56 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              title: Text(widget.dayOff.name, style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-              subtitle: widget.dayOff.isHalfDay == true?
-                        const Text("Half days"): null,
+              title: Text(widget.dayOff.name, style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+              leading: CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.green,
+                  child: Text(widget.dayOff.getTotalTakenDays().toString().replaceAll(regex, ''),
+                      style: const TextStyle(color: Colors.white))),
+              subtitle: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (widget.dayOff.isHalfDay)
+                  const Text('Half days', style: TextStyle(fontSize: 12)),
+                  Padding(
+                      padding: const EdgeInsets.all(5),
+                      child:RichText(
+                        text: TextSpan(
+                          children: [
+                            const WidgetSpan(
+                              child: Icon(Icons.calendar_today, size: 15, color: Colors.green),
+                            ),
+                            TextSpan(
+                              text: " " + DateFormat('dd MMMM yyyy').format(widget.dayOff.dateStart),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      )),
+                  if (widget.dayOff.getTotalTakenDays() > 1)
+                  const Padding(
+                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      child: Icon(Icons.arrow_drop_down, size: 15, color: Colors.green)
+                  ),
+                  if (widget.dayOff.getTotalTakenDays() > 1)
+                  Padding(
+                      padding: const EdgeInsets.all(5),
+                      child:RichText(
+                        text: TextSpan(
+                          children: [
+                            const WidgetSpan(
+                              child: Icon(Icons.calendar_today, size: 15, color: Colors.green),
+                            ),
+                            TextSpan(
+                              text: " " + DateFormat('dd MMMM yyyy').format(widget.dayOff.dateEnd),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ))
+                ],
+              ),
               trailing: PopupMenuButton(
                   onSelected: (value) {
                     _onMenuItemSelected(value as Options);
@@ -67,17 +113,6 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
                   ]
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.green,
-                    child: Text(widget.dayOff.getTotalTakenDays().toString().replaceAll(regex, ''),
-                        style: const TextStyle(color: Colors.white))),
-                _TimeLine(dayOff: widget.dayOff)
-              ],
-            )
           ],
         ),
       ),
@@ -99,77 +134,4 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
     }
   }
 
-}
-
-
-class _TimeLine extends StatelessWidget {
-
-  const _TimeLine({
-    Key? key,
-    required this.dayOff,
-  }) : super(key: key);
-
-  final DayOff dayOff;
-
-  @override
-  Widget build(BuildContext context){
-
-    return Container(
-        constraints: const BoxConstraints(
-            maxHeight: 100
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: SfLinearGauge(
-            showLabels: false,
-            showTicks: false,
-            orientation: LinearGaugeOrientation.vertical,
-            minimum: 0,
-            maximum: 1,
-            interval: 1,
-            barPointers: [LinearBarPointer(value: 1, color: Colors.green)],
-            markerPointers: [
-              for (double i=0; i<2; i++)
-                LinearWidgetPointer(
-                  value: i,
-                  child: Container(
-                      height: 10,
-                      width: 10,
-                      decoration: BoxDecoration(color: Colors.green,
-                          shape: BoxShape.circle)
-                  ),
-                ),
-              _getPointer(1, DateFormat('dd MMMM yyyy').format(dayOff.dateStart)),
-              _getPointer(0, DateFormat('dd MMMM yyyy').format(dayOff.dateEnd))
-            ],
-          ),
-        )
-    );
-  }
-
-  _getPointer(double position, String text) {
-    return LinearWidgetPointer(
-      value: position,
-      position: LinearElementPosition.inside,
-      dragBehavior: LinearMarkerDragBehavior.constrained,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-        // color: Colors.amberAccent,
-        // constraints: const BoxConstraints(maxHeight: 40),
-        child: RichText(
-          text: TextSpan(
-            children: [
-              const WidgetSpan(
-                child: Icon(Icons.calendar_today, size: 15),
-              ),
-              TextSpan(
-                text: " $text",
-                style: const TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
