@@ -36,10 +36,10 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              title: Text(widget.dayOff.name, style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+              title: Text(widget.dayOff.name, style: TextStyle(color: widget.pool.color, fontWeight: FontWeight.bold)),
               leading: CircleAvatar(
                   radius: 20,
-                  backgroundColor: Colors.green,
+                  backgroundColor: widget.pool.color,
                   child: Text(widget.dayOff.getTotalTakenDays().toString().replaceAll(regex, ''),
                       style: const TextStyle(color: Colors.white))),
               subtitle: Column(
@@ -54,7 +54,7 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
                         text: TextSpan(
                           children: [
                             const WidgetSpan(
-                              child: Icon(Icons.calendar_today, size: 15, color: Colors.green),
+                              child: Icon(Icons.calendar_today, size: 15, color: Colors.white),
                             ),
                             TextSpan(
                               text: " " + DateFormat('dd MMMM yyyy').format(widget.dayOff.dateStart),
@@ -66,7 +66,7 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
                   if (widget.dayOff.getTotalTakenDays() > 1)
                   const Padding(
                       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      child: Icon(Icons.arrow_drop_down, size: 15, color: Colors.green)
+                      child: Icon(Icons.arrow_drop_down, size: 15, color: Colors.white)
                   ),
                   if (widget.dayOff.getTotalTakenDays() > 1)
                   Padding(
@@ -75,7 +75,7 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
                         text: TextSpan(
                           children: [
                             const WidgetSpan(
-                              child: Icon(Icons.calendar_today, size: 15, color: Colors.green),
+                              child: Icon(Icons.calendar_today, size: 15, color: Colors.white),
                             ),
                             TextSpan(
                               text: " " + DateFormat('dd MMMM yyyy').format(widget.dayOff.dateEnd),

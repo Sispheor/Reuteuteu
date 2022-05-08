@@ -21,13 +21,14 @@ class DayOffAdapter extends TypeAdapter<DayOff> {
       fields[1] as DateTime,
       fields[2] as DateTime,
       fields[3] as bool,
+      color: fields[4] == null ? Colors.green : fields[4] as Color,
     );
   }
 
   @override
   void write(BinaryWriter writer, DayOff obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class DayOffAdapter extends TypeAdapter<DayOff> {
       ..writeByte(2)
       ..write(obj.dateEnd)
       ..writeByte(3)
-      ..write(obj.isHalfDay);
+      ..write(obj.isHalfDay)
+      ..writeByte(4)
+      ..write(obj.color);
   }
 
   @override

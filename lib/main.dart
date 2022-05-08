@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:sloth_day/adapters.dart';
 import 'package:sloth_day/pages/list_bucket.dart';
 
 import 'models/bucket.dart';
@@ -10,6 +11,7 @@ import 'models/pool.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  Hive.registerAdapter(ColorAdapter());
   Hive.registerAdapter(DayOffAdapter());
   Hive.registerAdapter(PoolAdapter());
   Hive.registerAdapter(BucketAdapter());
@@ -27,18 +29,18 @@ void main() async {
   bucketBox.addAll([bucket2021]);
 
   // create pools
-  var payedVacation = Pool("CP", 25);
-  var rtt = Pool("RTT", 10);
+  var payedVacation = Pool("CP", 25, color: Colors.red);
+  var rtt = Pool("RTT", 10, color: Colors.yellow);
   poolBox.addAll([payedVacation, rtt]);  // add the pools to the database
   bucket2021.pools = HiveList(poolBox);  // create a HiveList
   bucket2021.pools?.addAll([payedVacation, rtt]);
   bucket2021.save(); // make persistent the changes
 
   // create couple days off
-  var vacation1 = DayOff("vac1", DateTime.utc(2021, 1, 1), DateTime.utc(2021, 1, 10), false);
-  var vacation2 = DayOff("vac2", DateTime.utc(2021, 2, 1), DateTime.utc(2021, 2, 10), false);
-  var vacation3 = DayOff("vac3", DateTime.utc(2021, 3, 1), DateTime.utc(2021, 3, 5), false);
-  var vacation4 = DayOff("vac4", DateTime.utc(2021, 4, 1), DateTime.utc(2021, 4, 1), true);
+  var vacation1 = DayOff("vac1", DateTime.utc(2022, 1, 1), DateTime.utc(2022, 1, 10), false, color: payedVacation.color);
+  var vacation2 = DayOff("vac2", DateTime.utc(2022, 2, 1), DateTime.utc(2022, 2, 10), false, color: payedVacation.color);
+  var vacation3 = DayOff("vac3", DateTime.utc(2022, 3, 1), DateTime.utc(2022, 3, 5), false, color: rtt.color);
+  var vacation4 = DayOff("vac4", DateTime.utc(2022, 4, 1), DateTime.utc(2022, 4, 1), true, color: rtt.color);
   dayOffBox.addAll([vacation1, vacation2, vacation3, vacation4]); // save to the db
 
   // place days off in different pools

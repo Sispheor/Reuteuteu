@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:sloth_day/models/bucket.dart';
 import 'package:sloth_day/models/day_off.dart';
 import 'package:sloth_day/models/pool.dart';
@@ -43,7 +42,7 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
           child: Column(
             children: [
               ListTile(
-                title: Text(widget.pool.name, style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                title: Text(widget.pool.name, style: TextStyle(color: widget.pool.color, fontWeight: FontWeight.bold)),
                 subtitle: Text("${widget.pool.getTotalTakenDays().toString().replaceAll(regex, '')} taken / ${widget.pool.maxDays}",
                   style: TextStyle(color: Colors.white.withOpacity(0.6)),
                 ),
@@ -86,7 +85,7 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
                       children: [
                         Text(
                           widget.pool.getAvailableDays().toString().replaceAll(regex, ''),
-                          style: TextStyle(color: Colors.green, fontSize: 50, fontWeight: FontWeight.bold),
+                          style: TextStyle(color: widget.pool.color, fontSize: 50, fontWeight: FontWeight.bold),
                         ),
                         Text(
                           "days available",

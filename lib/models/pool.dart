@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:sloth_day/models/day_off.dart';
 import 'package:hive/hive.dart';
 part 'pool.g.dart';
@@ -10,8 +11,10 @@ class Pool extends HiveObject {
   double maxDays;
   @HiveField(2)
   HiveList? dayOffList;
+  @HiveField(3, defaultValue: Colors.green)
+  Color color;
 
-  Pool(this.name, this.maxDays);
+  Pool(this.name, this.maxDays, {this.color = Colors.green});
 
   double getTotalTakenDays() {
     if (dayOffList == null){
@@ -29,4 +32,3 @@ class Pool extends HiveObject {
   }
 
 }
-

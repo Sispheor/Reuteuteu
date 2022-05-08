@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 part 'day_off.g.dart';
 
@@ -13,8 +14,10 @@ class DayOff extends HiveObject {
   late DateTime dateEnd;
   @HiveField(3)
   late bool isHalfDay;
+  @HiveField(4, defaultValue: Colors.green)
+  Color color;
 
-  DayOff(this.name, this.dateStart, this.dateEnd, this.isHalfDay);
+  DayOff(this.name, this.dateStart, this.dateEnd, this.isHalfDay, {this.color = Colors.green});
 
   @override
   String toString() {

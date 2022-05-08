@@ -4,6 +4,7 @@ import 'package:sloth_day/models/bucket.dart';
 import 'package:sloth_day/models/day_off.dart';
 import 'package:sloth_day/models/pool.dart';
 import 'package:sloth_day/pages/create_or_edit_day_off.dart';
+import 'package:sloth_day/utils/widget_utils.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 
@@ -45,17 +46,6 @@ class _CalendarPageState extends State<CalendarPage> {
             )
         ));
 
-    return  SfCalendar(
-      view: CalendarView.month,
-      firstDayOfWeek: 1, // Monday
-      showDatePickerButton: true,
-      monthViewSettings: const MonthViewSettings(showAgenda: true,
-        agendaItemHeight: 50,
-        appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
-      ),
-      dataSource: DayOffDataSource(_getDataSource()),
-      onTap: calendarTapped,
-    );
   }
 
   void calendarTapped(CalendarTapDetails details) {
@@ -120,7 +110,7 @@ class DayOffDataSource extends CalendarDataSource {
 
   @override
   Color getColor(int index) {
-    return Colors.green;
+    return appointments![index].color;
   }
 
   @override

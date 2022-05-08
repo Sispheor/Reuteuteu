@@ -19,19 +19,22 @@ class PoolAdapter extends TypeAdapter<Pool> {
     return Pool(
       fields[0] as String,
       fields[1] as double,
+      color: fields[3] == null ? Colors.green : fields[3] as Color,
     )..dayOffList = (fields[2] as HiveList?)?.castHiveList();
   }
 
   @override
   void write(BinaryWriter writer, Pool obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
       ..write(obj.maxDays)
       ..writeByte(2)
-      ..write(obj.dayOffList);
+      ..write(obj.dayOffList)
+      ..writeByte(3)
+      ..write(obj.color);
   }
 
   @override

@@ -180,7 +180,8 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
         nameController.text,
         dayOffDateStart!,
         dayOffDateEnd!,
-        isHalfDay);
+        isHalfDay,
+        color: widget.pool.color);
     final box = Boxes.getDayOffs();
     box.add(newDayOff);
     widget.pool.dayOffList!.add(newDayOff);
