@@ -1,7 +1,6 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive/hive.dart';
 import 'package:sloth_day/hive_boxes.dart';
@@ -31,18 +30,25 @@ class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final maxDayController = TextEditingController();
+  Color currentColor = const Color(0xff7f4934);
+  bool firstPageLoad = false;
 
   @override
   Widget build(BuildContext context) {
-
     String title = "Create a pool of day off";
+    Color pickerColor = const Color(0xff7f4934);
 
-    if (widget.isEdit){
+    void changeColor(Color color) {
+      setState(() => pickerColor = color);
+    }
+
+    if (widget.isEdit && !firstPageLoad){
       title = "Edit pool '${widget.pool!.name}'";
       nameController.text = widget.pool!.name;
       maxDayController.text = widget.pool!.maxDays.toStringAsFixed(0);
+      currentColor = widget.pool!.color;
+      firstPageLoad = true;
     }
-
 
     return Scaffold(
         appBar: AppBar(
@@ -50,7 +56,7 @@ class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
           title: Text(title),
         ),
         body: Container(
-            constraints: BoxConstraints.expand(),
+            constraints: const BoxConstraints.expand(),
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/images/sloth2.png"),
@@ -89,6 +95,47 @@ class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
                                 FilteringTextInputFormatter.digitsOnly
                               ], // Only numbers can be entered
                             ),
+                            const Divider(),
+                            const SizedBox(height: 20),
+                            ElevatedButton.icon(
+                                icon: const Icon(Icons.brush),
+                                style: ElevatedButton.styleFrom(
+                                    primary: currentColor
+                                ),
+                                label: const Text("Color"),
+                                onPressed: (){
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Select a color'),
+                                        titlePadding: const EdgeInsets.all(10),
+                                        contentPadding: const EdgeInsets.all(2),
+                                        content: SingleChildScrollView(
+                                          child: BlockPicker(
+                                            pickerColor: pickerColor,
+                                            onColorChanged: changeColor,
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          ElevatedButton(
+                                            child: const Text('Ok'),
+                                            onPressed: () {
+                                              setState(() {
+                                                currentColor = pickerColor;
+                                              });
+                                              Navigator.of(context).pop();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                                primary: Colors.green
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                            ),
                           ]
                       )
                   )
@@ -114,12 +161,12 @@ class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
     );
   }
 
-
   Future<void> _persistPool() async {
 
     Pool newPool = Pool(
         nameController.text,
-        double.parse(maxDayController.text));
+        double.parse(maxDayController.text),
+        color: currentColor);
     final box = Boxes.getPools();
     box.add(newPool);
     widget.bucket.pools!.add(newPool);
@@ -143,6 +190,7 @@ class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
   _updatePool(Pool poolToUpdate) {
     poolToUpdate.name = nameController.text;
     poolToUpdate.maxDays = double.parse(maxDayController.text);
+    poolToUpdate.color = currentColor;
     poolToUpdate.save();
   }
 
