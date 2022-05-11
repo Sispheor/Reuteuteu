@@ -6,7 +6,7 @@ import 'package:sloth_day/pages/create_or_edit_day_off.dart';
 import 'package:sloth_day/utils/widget_utils.dart';
 import 'package:sloth_day/widgets/dialog_confirm_cancel.dart';
 
-enum Options { edit, delete }
+import 'edit_delete_menu_item.dart';
 
 class DayOffCardWidget extends StatefulWidget {
 
@@ -89,26 +89,7 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
                     _onMenuItemSelected(value as Options);
                   },
                   icon: const Icon(Icons.more_vert),
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: Options.edit,
-                      child:  Row(
-                        children: const [
-                          Icon(Icons.edit),
-                          Text("Edit"),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: Options.delete,
-                      child:  Row(
-                        children: const [
-                          Icon(Icons.delete),
-                          Text("Delete"),
-                        ],
-                      ),
-                    )
-                  ]
+                  itemBuilder: (context) => popupMenuItemEditDelete()
               ),
             ),
           ],

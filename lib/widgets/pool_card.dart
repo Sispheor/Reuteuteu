@@ -7,8 +7,8 @@ import 'package:sloth_day/pages/list_day_off.dart';
 import 'package:sloth_day/utils/widget_utils.dart';
 import 'package:sloth_day/widgets/dialog_confirm_cancel.dart';
 
+import 'edit_delete_menu_item.dart';
 
-enum Options { edit, delete }
 
 class PoolCardWidget extends StatefulWidget {
 
@@ -51,26 +51,7 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
                       _onMenuItemSelected(value as Options);
                     },
                     icon: const Icon(Icons.more_vert),
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        value: Options.edit,
-                        child:  Row(
-                          children: const [
-                            Icon(Icons.edit),
-                            Text("Edit"),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: Options.delete,
-                        child:  Row(
-                          children: const [
-                            Icon(Icons.delete),
-                            Text("Delete"),
-                          ],
-                        ),
-                      )
-                    ]
+                    itemBuilder: (context) => popupMenuItemEditDelete()
                 ),
 
               ),

@@ -6,7 +6,8 @@ import 'package:sloth_day/pages/create_or_edit_bucket.dart';
 import 'package:sloth_day/pages/homepage.dart';
 import 'package:sloth_day/widgets/dialog_confirm_cancel.dart';
 
-enum Options { edit, delete }
+import 'edit_delete_menu_item.dart';
+
 
 class BucketCardWidget extends StatefulWidget {
 
@@ -36,26 +37,7 @@ class _BucketCardWidgetState extends State<BucketCardWidget> {
                     _onMenuItemSelected(value as Options);
                   },
                   icon: const Icon(Icons.more_vert),
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: Options.edit,
-                      child:  Row(
-                        children: const [
-                          Icon(Icons.edit),
-                          Text("Edit"),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: Options.delete,
-                      child:  Row(
-                        children: const [
-                          Icon(Icons.delete),
-                          Text("Delete"),
-                        ],
-                      ),
-                    )
-                  ]
+                  itemBuilder: (context) => popupMenuItemEditDelete()
               ),
               onTap: () {
                   Navigator.push(
