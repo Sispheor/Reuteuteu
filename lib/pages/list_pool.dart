@@ -40,38 +40,47 @@ class _ListPoolState extends State<ListPool>{
 
   @override
   Widget build(BuildContext context) {
-    return  Column(
-      children: [
-        if (bucket.pools!.isNotEmpty)
-          Card(
-              child: SizedBox(
-                  height: 150,
-                  child: ConsumptionGauge(max: bucket.getPoolMaxDays(), available: bucket.getAvailable())
-              )
-          ),
-        Expanded(
-          child: ValueListenableBuilder<Box<Pool>>(
-            valueListenable: Boxes.getPools().listenable(),
-            builder: (context, box, _) {
-              final pools = box.values.where((element) => bucket.pools!.contains(element));
-              if (pools.isEmpty) {
-                return const Center(
-                  child: Text(
-                    'No pool yet',
-                    style: TextStyle(fontSize: 24),
-                  ),
-                );
-              }else{
-                return  ListView(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  children: pools.cast<Pool>().map((pool) => PoolCardWidget(bucket: bucket, pool: pool, callback: callback)).toList(),
-                );
-              }
-            },
-          ),
+    return  Container(
+        constraints: const BoxConstraints.expand(),
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("assets/images/sloth3.png"),
+              fit: BoxFit.fitWidth,
+              alignment: Alignment.bottomCenter),
+        ),
+        child: Column(
+          children: [
+            if (bucket.pools!.isNotEmpty)
+              Card(
+                  child: SizedBox(
+                      height: 150,
+                      child: ConsumptionGauge(max: bucket.getPoolMaxDays(), available: bucket.getAvailable())
+                  )
+              ),
+            Expanded(
+              child: ValueListenableBuilder<Box<Pool>>(
+                valueListenable: Boxes.getPools().listenable(),
+                builder: (context, box, _) {
+                  final pools = box.values.where((element) => bucket.pools!.contains(element));
+                  if (pools.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'No pool yet',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    );
+                  }else{
+                    return  ListView(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      children: pools.cast<Pool>().map((pool) => PoolCardWidget(bucket: bucket, pool: pool, callback: callback)).toList(),
+                    );
+                  }
+                },
+              ),
+            )
+          ],
         )
-      ],
     );
   }
 }

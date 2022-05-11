@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:sloth_day/models/day_off.dart';
 import 'package:sloth_day/models/pool.dart';
 import 'package:sloth_day/pages/create_or_edit_day_off.dart';
+import 'package:sloth_day/utils/widget_utils.dart';
 import 'package:sloth_day/widgets/dialog_confirm_cancel.dart';
 
 enum Options { edit, delete }
@@ -25,9 +26,6 @@ class DayOffCardWidget extends StatefulWidget {
 
 class _DayOffCardWidgetState extends State<DayOffCardWidget> {
 
-  RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
-
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -40,7 +38,7 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
               leading: CircleAvatar(
                   radius: 20,
                   backgroundColor: widget.pool.color,
-                  child: Text(widget.dayOff.getTotalTakenDays().toString().replaceAll(regex, ''),
+                  child: Text(removeDecimalZeroFormat(widget.dayOff.getTotalTakenDays()),
                       style: const TextStyle(color: Colors.white))),
               subtitle: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -126,7 +124,7 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
       ).then((_) => setState(() { widget.callback();}));
     }
     if (value == Options.delete) {
-      final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete pool '${widget.pool.name}'?", 'Confirm');
+      final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete day off '${widget.dayOff.name}'?", 'Confirm');
       if (action == DialogAction.confirmed) {
         widget.dayOff.delete();
         widget.callback();

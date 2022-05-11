@@ -4,7 +4,9 @@ import 'package:sloth_day/models/day_off.dart';
 import 'package:sloth_day/models/pool.dart';
 import 'package:sloth_day/pages/create_or_edit_pool.dart';
 import 'package:sloth_day/pages/list_day_off.dart';
+import 'package:sloth_day/utils/widget_utils.dart';
 import 'package:sloth_day/widgets/dialog_confirm_cancel.dart';
+
 
 enum Options { edit, delete }
 
@@ -25,8 +27,6 @@ class PoolCardWidget extends StatefulWidget {
 
 class _PoolCardWidgetState extends State<PoolCardWidget> {
 
-  RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -43,7 +43,7 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
             children: [
               ListTile(
                 title: Text(widget.pool.name, style: TextStyle(color: widget.pool.color, fontWeight: FontWeight.bold)),
-                subtitle: Text("${widget.pool.getTotalTakenDays().toString().replaceAll(regex, '')} taken / ${widget.pool.maxDays}",
+                subtitle: Text("${removeDecimalZeroFormat(widget.pool.getTotalTakenDays())} taken / ${widget.pool.maxDays}",
                   style: TextStyle(color: Colors.white.withOpacity(0.6)),
                 ),
                 trailing: PopupMenuButton(
@@ -84,7 +84,7 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          widget.pool.getAvailableDays().toString().replaceAll(regex, ''),
+                          removeDecimalZeroFormat(widget.pool.getAvailableDays()),
                           style: TextStyle(color: widget.pool.color, fontSize: 50, fontWeight: FontWeight.bold),
                         ),
                         Text(

@@ -22,8 +22,14 @@ class ConfirmCancelDialogs {
             TextButton(
               onPressed: () => Navigator.of(context).pop(DialogAction.canceled),
               child: const Text('No'),
+              style: TextButton.styleFrom(
+                primary: Colors.white,
+              ),
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  primary: Colors.green
+              ),
               onPressed: () => Navigator.of(context).pop(DialogAction.confirmed),
               child: const Text(
                 'Yes',

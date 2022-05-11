@@ -34,7 +34,7 @@ class _ListBucketPageState extends State<ListBucketPage> {
           ],
         ),
         body: Container(
-          constraints: BoxConstraints.expand(),
+          constraints: const BoxConstraints.expand(),
           decoration: const BoxDecoration(
             image: DecorationImage(
                 image: AssetImage("assets/images/sloth5.png"),

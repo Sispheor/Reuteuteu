@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -8,21 +11,7 @@ import 'models/bucket.dart';
 import 'models/day_off.dart';
 import 'models/pool.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  Hive.registerAdapter(ColorAdapter());
-  Hive.registerAdapter(DayOffAdapter());
-  Hive.registerAdapter(PoolAdapter());
-  Hive.registerAdapter(BucketAdapter());
-
-  var bucketBox = await Hive.openBox<Bucket>('buckets');
-  var poolBox = await Hive.openBox<Pool>('pools');
-  var dayOffBox = await Hive.openBox<DayOff>('day_offs');
-  await bucketBox.clear();
-  await poolBox.clear();
-  await dayOffBox.clear();
-
+void createTestingData(Box<Bucket> bucketBox, Box<Pool> poolBox, Box<DayOff> dayOffBox){
   // testing data
   // create buckets
   var bucket2021 = Bucket('2021');
@@ -52,6 +41,27 @@ void main() async {
   rtt.dayOffList?.addAll([vacation3, vacation4]);
   rtt.save();
   // end testing data
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(ColorAdapter());
+  Hive.registerAdapter(DayOffAdapter());
+  Hive.registerAdapter(PoolAdapter());
+  Hive.registerAdapter(BucketAdapter());
+
+  var bucketBox = await Hive.openBox<Bucket>('buckets');
+  var poolBox = await Hive.openBox<Pool>('pools');
+  var dayOffBox = await Hive.openBox<DayOff>('day_offs');
+  await bucketBox.clear();
+  await poolBox.clear();
+  await dayOffBox.clear();
+
+  if (kDebugMode){
+    log("App started with debug mode. Creating testing data");
+    createTestingData(bucketBox, poolBox, dayOffBox);
+  }
 
   runApp(const MyApp());
 }

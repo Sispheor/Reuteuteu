@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:sloth_day/utils/widget_utils.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class ConsumptionGauge extends StatelessWidget {
@@ -36,7 +37,7 @@ class ConsumptionGauge extends StatelessWidget {
                   widget: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Text(available.toString(),
+                      Text(removeDecimalZeroFormat(available),
                           style: const TextStyle(
                               color: Colors.green,
                               fontWeight: FontWeight.bold,
@@ -61,7 +62,7 @@ class ConsumptionGauge extends StatelessWidget {
                   width: 12,
                   pointerOffset: -3,
                   cornerStyle: CornerStyle.bothCurve,
-                  color: Colors.white
+                  color: Colors.green
               )
 
             ]),
