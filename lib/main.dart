@@ -11,7 +11,11 @@ import 'models/bucket.dart';
 import 'models/day_off.dart';
 import 'models/pool.dart';
 
-void createTestingData(Box<Bucket> bucketBox, Box<Pool> poolBox, Box<DayOff> dayOffBox){
+Future<void> createTestingData(Box<Bucket> bucketBox, Box<Pool> poolBox, Box<DayOff> dayOffBox) async {
+  // clear boxes
+  await bucketBox.clear();
+  await poolBox.clear();
+  await dayOffBox.clear();
   // testing data
   // create buckets
   var bucket2021 = Bucket('2021');
@@ -54,9 +58,6 @@ void main() async {
   var bucketBox = await Hive.openBox<Bucket>('buckets');
   var poolBox = await Hive.openBox<Pool>('pools');
   var dayOffBox = await Hive.openBox<DayOff>('day_offs');
-  await bucketBox.clear();
-  await poolBox.clear();
-  await dayOffBox.clear();
 
   if (kDebugMode){
     log("App started with debug mode. Creating testing data");

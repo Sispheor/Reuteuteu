@@ -1,6 +1,6 @@
 # sloth_day
 
-Simple day off tracker
+Simple day off tracker app made with Flutter
 
 ## Dev notes
 
