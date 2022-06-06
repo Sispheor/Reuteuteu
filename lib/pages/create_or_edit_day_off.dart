@@ -155,11 +155,12 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
     if (widget.isEdit){
       initialDateRange = DateTimeRange(
           start: widget.dayOff!.dateStart,
-          end:widget.dayOff!.dateEnd
+          end:widget.dayOff!.dateEnd,
       );
     }
     final DateTimeRange? picked = await showDateRangePicker(
       context: context,
+      locale: const Locale('en', 'GB'),
       initialDateRange: initialDateRange,
       firstDate: DateTime(DateTime.now().year - 1),
       lastDate: DateTime(DateTime.now().year + 3),

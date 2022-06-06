@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sloth_day/adapters.dart';
@@ -74,6 +75,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       title: 'Sloth',
       themeMode: ThemeMode.dark, // Or [ThemeMode.dark]
       theme: NordTheme.light(),
