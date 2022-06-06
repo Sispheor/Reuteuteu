@@ -33,7 +33,7 @@ dependencies:
   hive_flutter: ^1.1.0
   path_provider: 2.0.9
   intl: 0.17.0
-  syncfusion_flutter_gauges: 20.1.50
+  syncfusion_flutter_gauges: 20.1.58
   timeline_tile: 2.0.0
   flutter_nord_theme: 2.0.2
   # The following adds the Cupertino Icons font to your application.
