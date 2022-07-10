@@ -61,7 +61,7 @@ class _CreateOrEditDayOffPage extends State<CreateOrEditDayOffPage> {
           title: Text(title),
         ),
         body: Container(
-            constraints: BoxConstraints.expand(),
+            constraints: const BoxConstraints.expand(),
             decoration: const BoxDecoration(
               image: DecorationImage(
                   image: AssetImage("assets/images/sloth4.png"),

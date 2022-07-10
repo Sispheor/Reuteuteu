@@ -7,6 +7,8 @@ import 'package:sloth_day/pages/create_or_edit_pool.dart';
 import 'package:sloth_day/pages/list_all_day_off_in_bucket.dart';
 import 'package:sloth_day/pages/list_pool.dart';
 
+import '../widgets/dialog_filter_days_off.dart';
+
 
 class HomePage extends StatefulWidget {
 
@@ -24,6 +26,7 @@ class _HomePageState extends State<HomePage>{
 
   int _selectedIndex = 0;
   final PageController controller = PageController();
+  FilterDaysOffDialogsAction selectedFilter = FilterDaysOffDialogsAction.byDateCreated;
 
   callback(){
     setState(() {
@@ -38,7 +41,7 @@ class _HomePageState extends State<HomePage>{
     List<Widget> _pages = <Widget>[
       ListPool(bucket: widget.bucket),
       CalendarPage(bucket: widget.bucket),
-      ListDayOff(bucket: widget.bucket),
+      ListDayOff(bucket: widget.bucket, filter: selectedFilter),
     ];
 
     return Scaffold(
@@ -46,6 +49,19 @@ class _HomePageState extends State<HomePage>{
         backgroundColor: NordColors.polarNight.darkest,
         title: Text("Bucket ${widget.bucket.name}"),
         actions: <Widget>[
+          if (_selectedIndex == 2)
+          IconButton(
+            icon: const Icon(Icons.filter_alt),
+            onPressed: () async {
+              final action = await FilterDaysOffDialogs.selectFilterDialog(context);
+              if (action != FilterDaysOffDialogsAction.canceled){
+                setState(() {
+                  // log("Change filter to $action");
+                  selectedFilter = action;
+                });
+              }
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
@@ -81,7 +97,7 @@ class _HomePageState extends State<HomePage>{
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedIconTheme: IconThemeData(color: Colors.green, size: 40),
+        selectedIconTheme: const IconThemeData(color: Colors.green, size: 40),
       ),
     );
   }

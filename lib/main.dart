@@ -35,7 +35,7 @@ Future<void> createTestingData(Box<Bucket> bucketBox, Box<Pool> poolBox, Box<Day
   var vacation2 = DayOff("vac2", DateTime.utc(2022, 2, 1), DateTime.utc(2022, 2, 10), false, color: payedVacation.color);
   var vacation3 = DayOff("vac3", DateTime.utc(2022, 3, 1), DateTime.utc(2022, 3, 5), false, color: rtt.color);
   var vacation4 = DayOff("vac4", DateTime.utc(2022, 4, 1), DateTime.utc(2022, 4, 1), true, color: rtt.color);
-  dayOffBox.addAll([vacation1, vacation2, vacation3, vacation4]); // save to the db
+  dayOffBox.addAll([vacation4, vacation3, vacation2, vacation1]); // save to the db
 
   // place days off in different pools
   payedVacation.dayOffList = HiveList(dayOffBox);

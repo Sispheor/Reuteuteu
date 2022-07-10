@@ -4,7 +4,6 @@ import 'package:sloth_day/models/bucket.dart';
 import 'package:sloth_day/models/day_off.dart';
 import 'package:sloth_day/models/pool.dart';
 import 'package:sloth_day/pages/create_or_edit_day_off.dart';
-import 'package:sloth_day/utils/widget_utils.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 
@@ -25,7 +24,7 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Container(
-            constraints: BoxConstraints.expand(),
+            constraints: const BoxConstraints.expand(),
             decoration: const BoxDecoration(
               image: DecorationImage(
                   scale: 6,
@@ -52,7 +51,7 @@ class _CalendarPageState extends State<CalendarPage> {
     if (details.targetElement == CalendarElement.appointment ||
         details.targetElement == CalendarElement.agenda) {
       DayOff selectedDayOff = details.appointments![0];
-      print(selectedDayOff);
+      // print(selectedDayOff);
       Pool pool = _getPoolOfDayOff(selectedDayOff);
       Navigator.push(context,
           MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(isEdit: true, pool: pool, dayOff: selectedDayOff))
