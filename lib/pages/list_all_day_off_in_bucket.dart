@@ -12,9 +12,9 @@ import 'package:sloth_day/widgets/dialog_filter_days_off.dart';
 class ListDayOff extends StatefulWidget{
 
   final Bucket bucket;
-  final FilterDaysOffDialogsAction filter;
+  final FilterDaysOffDialogsAction? filter;
 
-  const ListDayOff({Key? key, required this.bucket, required this.filter }) : super(key: key);
+  const ListDayOff({Key? key, required this.bucket, this.filter }) : super(key: key);
 
   @override
   _ListDayOffState createState() => _ListDayOffState();
@@ -51,12 +51,12 @@ class _ListDayOffState extends State<ListDayOff> {
         }else{
           // log("Current filter: ${widget.filter}");
           // log(dayOffCopy.toString());
-          if (widget.filter == FilterDaysOffDialogsAction.byDateStart){
+          if (widget.filter != null && widget.filter == FilterDaysOffDialogsAction.byDateStart){
             log("Applying new filter: ${widget.filter}");
             dayOffCopy.sort((a, b) => a.dateStart.compareTo(b.dateStart));
             // log(dayOffCopy.toString());
           }
-          if (widget.filter == FilterDaysOffDialogsAction.byDateEnd){
+          if (widget.filter != null && widget.filter == FilterDaysOffDialogsAction.byDateEnd){
             log("Applying new filter: ${widget.filter}");
             dayOffCopy.sort((a, b) => a.dateEnd.compareTo(b.dateEnd));
             // log(dayOffCopy.toString());

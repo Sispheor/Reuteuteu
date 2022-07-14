@@ -2,13 +2,13 @@
 
 import 'dart:developer';
 
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../shared_preferences _manager.dart';
 
 final List<String> filters = ["byDateStart", "byDateEnd", "byDateCreated", "canceled"];
 enum FilterDaysOffDialogsAction { byDateStart, byDateEnd, byDateCreated , canceled }
-const String dayOffFilterPrefKey = "day_off_filter";
+
 
 class FilterDaysOffDialogs {
   static Future<FilterDaysOffDialogsAction> selectFilterDialog(
@@ -16,14 +16,7 @@ class FilterDaysOffDialogs {
       ) async {
 
     log("Enter FilterDaysOffDialogs");
-    FilterDaysOffDialogsAction? _selectedFilter = FilterDaysOffDialogsAction.byDateStart;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? dayOffFilterPref = prefs.getString(dayOffFilterPrefKey);
-    log("dayOffFilterPref from shared: $dayOffFilterPref");
-    if (dayOffFilterPref != null){
-      _selectedFilter = EnumToString.fromString(FilterDaysOffDialogsAction.values, dayOffFilterPref);
-      log("Loaded pref: $_selectedFilter");
-    }
+    var _selectedFilter = await SharedPrefManager.getDayOffFilter();
 
     final action = await showDialog(
         context: context,
@@ -49,8 +42,7 @@ class FilterDaysOffDialogs {
                               _selectedFilter = value;
                             });
                             log("Selected filter: byDateStart. Saving in pref");
-                            await prefs.setString(dayOffFilterPrefKey,
-                                EnumToString.convertToString(value));
+                            await SharedPrefManager.setDayOffFilter(value);
                           },
                         ),
                       ),
@@ -64,8 +56,7 @@ class FilterDaysOffDialogs {
                               _selectedFilter = value;
                             });
                             log("Selected filter: byDateEnd. Saving in pref");
-                            await prefs.setString(dayOffFilterPrefKey,
-                                EnumToString.convertToString(value));
+                            await SharedPrefManager.setDayOffFilter(value);
                           },
                         ),
                       ),
@@ -79,8 +70,7 @@ class FilterDaysOffDialogs {
                               _selectedFilter = value;
                             });
                             log("Selected filter: byDateCreated. Saving in pref");
-                            await prefs.setString(dayOffFilterPrefKey,
-                                EnumToString.convertToString(value));
+                            await SharedPrefManager.setDayOffFilter(value);
                           },
                         ),
                       ),

@@ -7,6 +7,7 @@ import 'package:sloth_day/pages/create_or_edit_pool.dart';
 import 'package:sloth_day/pages/list_all_day_off_in_bucket.dart';
 import 'package:sloth_day/pages/list_pool.dart';
 
+import '../shared_preferences _manager.dart';
 import '../widgets/dialog_filter_days_off.dart';
 
 
@@ -26,7 +27,7 @@ class _HomePageState extends State<HomePage>{
 
   int _selectedIndex = 0;
   final PageController controller = PageController();
-  FilterDaysOffDialogsAction selectedFilter = FilterDaysOffDialogsAction.byDateCreated;
+  FilterDaysOffDialogsAction? selectedFilter;
 
   callback(){
     setState(() {
@@ -36,8 +37,22 @@ class _HomePageState extends State<HomePage>{
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState()  {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _asyncMethod();
+    });
+  }
 
+  _asyncMethod() async {
+    var _selectedFilter = await SharedPrefManager.getDayOffFilter();
+      setState(() {
+        selectedFilter = _selectedFilter;
+      });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     List<Widget> _pages = <Widget>[
       ListPool(bucket: widget.bucket),
       CalendarPage(bucket: widget.bucket),
