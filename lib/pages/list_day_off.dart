@@ -57,52 +57,63 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: NordColors.polarNight.darkest,
-        title: Text("Pool ${widget.pool.name}"),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.filter_alt),
-            onPressed: () async {
-              final action = await FilterDaysOffDialogs.selectFilterDialog(context);
-              if (action != FilterDaysOffDialogsAction.canceled){
-                setState(() {
-                  // log("Change filter to $action");
-                  selectedFilter = action;
-                });
-              }
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(isEdit: false, pool: widget.pool))).then((_) => setState(() {}));
-            },
-          )
-        ],
-      ),
-      body: Column(
-        children: [
-          if (widget.pool.dayOffList != null && widget.pool.dayOffList!.isNotEmpty)
-          Card(
-              child: SizedBox(
-                  height: 150,
-                  child: ConsumptionGauge(max: widget.pool.maxDays, available: widget.pool.getAvailableDays())
-              )
-          ),
-          Expanded(
-            child: ValueListenableBuilder<Box<DayOff>>(
-              valueListenable: Boxes.getDayOffs().listenable(),
-              builder: (context, box, _) {
-                final listDayOffs = box.values.where((element) => widget.pool.dayOffList!.contains(element));
-                return FilteredDayOffList(bucket: widget.bucket, filter: selectedFilter,listDayOff: listDayOffs);
+        appBar: AppBar(
+          backgroundColor: NordColors.polarNight.darkest,
+          title: Text("Pool ${widget.pool.name}"),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.filter_alt),
+              onPressed: () async {
+                final action = await FilterDaysOffDialogs.selectFilterDialog(context);
+                if (action != FilterDaysOffDialogsAction.canceled){
+                  setState(() {
+                    // log("Change filter to $action");
+                    selectedFilter = action;
+                  });
+                }
               },
             ),
-          )
-        ],
-      ),
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(isEdit: false, pool: widget.pool))).then((_) => setState(() {}));
+              },
+            )
+          ],
+        ),
+        body: Container(
+          constraints: const BoxConstraints.expand(),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/images/sloth6.png"),
+                fit: BoxFit.fitWidth,
+                alignment: Alignment.bottomCenter),
+          ),
+          child:
 
-    );
+
+          Column(
+            children: [
+              if (widget.pool.dayOffList != null && widget.pool.dayOffList!.isNotEmpty)
+                Card(
+                    child: SizedBox(
+                        height: 150,
+                        child: ConsumptionGauge(max: widget.pool.maxDays, available: widget.pool.getAvailableDays())
+                    )
+                ),
+              Expanded(
+                child: ValueListenableBuilder<Box<DayOff>>(
+                  valueListenable: Boxes.getDayOffs().listenable(),
+                  builder: (context, box, _) {
+                    final listDayOffs = box.values.where((element) => widget.pool.dayOffList!.contains(element));
+                    return FilteredDayOffList(bucket: widget.bucket, filter: selectedFilter,listDayOff: listDayOffs);
+                  },
+                ),
+              )
+            ],
+          ),
+
+        ));
   }
 }
