@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:sloth_day/models/bucket.dart';
 import 'package:sloth_day/models/day_off.dart';
 import 'package:sloth_day/models/pool.dart';
@@ -30,6 +31,7 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
+        color: NordColors.$3.withOpacity(0.6),
         child: InkWell(
           onTap: () {
             Navigator.push(
@@ -44,7 +46,7 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
               ListTile(
                 title: Text(widget.pool.name, style: TextStyle(color: widget.pool.color, fontWeight: FontWeight.bold)),
                 subtitle: Text("${removeDecimalZeroFormat(widget.pool.getTotalTakenDays())} taken / ${widget.pool.maxDays}",
-                  style: TextStyle(color: Colors.white.withOpacity(0.6)),
+                  style: const TextStyle(color: NordColors.$6),
                 ),
                 trailing: PopupMenuButton(
                     onSelected: (value) {
@@ -68,9 +70,9 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
                           removeDecimalZeroFormat(widget.pool.getAvailableDays()),
                           style: TextStyle(color: widget.pool.color, fontSize: 50, fontWeight: FontWeight.bold),
                         ),
-                        Text(
+                        const Text(
                           "days available",
-                          style: TextStyle(color: Colors.white.withOpacity(0.6)),
+                          style: TextStyle(color: NordColors.$6),
                         ),
                       ],
                     )

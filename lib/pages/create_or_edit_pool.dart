@@ -87,13 +87,11 @@ class _CreateOrEditPoolPage extends State<CreateOrEditPoolPage> {
                                 return null;
                               },
                             ),
-                            TextField(
+                            TextFormField(
                               controller: maxDayController,
                               decoration: const InputDecoration(labelText: "Number of day"),
-                              keyboardType: TextInputType.number,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.digitsOnly
-                              ], // Only numbers can be entered
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              inputFormatters:  [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?[5]{0,1}'))],
                             ),
                             const Divider(),
                             const SizedBox(height: 20),

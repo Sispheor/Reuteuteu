@@ -38,14 +38,22 @@ class _ListDayOffState extends State<ListDayOff> {
   @override
   Widget build(BuildContext context) {
 
-    return ValueListenableBuilder<Box<DayOff>>(
-      valueListenable: Boxes.getDayOffs().listenable(),
-      builder: (context, box, _) {
-        final daysOff = box.values.where((dayOff) => isDayOffPartOfTheCurrentBucket(dayOff));
-        return FilteredDayOffList(bucket: widget.bucket,
-            filter: widget.filter,
-            listDayOff: daysOff);
-      },
+    return Container(
+      constraints: const BoxConstraints.expand(),
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+            image: AssetImage("assets/images/sloth5.png"),
+            fit: BoxFit.fitWidth),
+      ),
+      child: ValueListenableBuilder<Box<DayOff>>(
+        valueListenable: Boxes.getDayOffs().listenable(),
+        builder: (context, box, _) {
+          final daysOff = box.values.where((dayOff) => isDayOffPartOfTheCurrentBucket(dayOff));
+          return FilteredDayOffList(bucket: widget.bucket,
+              filter: widget.filter,
+              listDayOff: daysOff);
+        },
+      ),
     );
   }
 

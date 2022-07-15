@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:intl/intl.dart';
 import 'package:sloth_day/models/day_off.dart';
 import 'package:sloth_day/models/pool.dart';
@@ -30,6 +31,7 @@ class _DayOffCardWidgetState extends State<DayOffCardWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
+        color: NordColors.$3.withOpacity(0.6),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
