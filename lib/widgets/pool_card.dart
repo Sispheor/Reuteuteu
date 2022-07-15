@@ -35,7 +35,7 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) {
-                return ListDayOffPage(pool: widget.pool);
+                return ListDayOffPage(bucket: widget.bucket, pool: widget.pool);
               }),
             ).then((_) => setState(() { widget.callback();}));
           },

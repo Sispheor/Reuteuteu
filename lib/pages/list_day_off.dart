@@ -10,13 +10,19 @@ import 'package:sloth_day/pages/create_or_edit_day_off.dart';
 import 'package:sloth_day/widgets/consumption_gauge.dart';
 import 'package:sloth_day/widgets/day_off_card.dart';
 
+import '../models/bucket.dart';
+import '../shared_preferences _manager.dart';
+import '../widgets/dialog_filter_days_off.dart';
+import '../widgets/filtered_day_off_list.dart';
+
 
 class ListDayOffPage extends StatefulWidget {
 
+  final Bucket bucket;
   final Pool pool;
 
   const ListDayOffPage({Key? key,
-    required this.pool}) : super(key: key);
+    required this.bucket, required this.pool }) : super(key: key);
 
   @override
   _ListDayOffPageState createState() => _ListDayOffPageState();
@@ -24,10 +30,27 @@ class ListDayOffPage extends StatefulWidget {
 
 class _ListDayOffPageState extends State<ListDayOffPage>{
 
+  FilterDaysOffDialogsAction? selectedFilter;
+
   callback(){
     setState(() {
       // this debug force the update of the widget
       log("New day off list length: ${widget.pool.dayOffList?.length}");
+    });
+  }
+
+  @override
+  void initState()  {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _asyncLoadDayOffFilter();
+    });
+  }
+
+  _asyncLoadDayOffFilter() async {
+    var _selectedFilter = await SharedPrefManager.getDayOffFilter();
+    setState(() {
+      selectedFilter = _selectedFilter;
     });
   }
 
@@ -38,6 +61,18 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
         backgroundColor: NordColors.polarNight.darkest,
         title: Text("Pool ${widget.pool.name}"),
         actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.filter_alt),
+            onPressed: () async {
+              final action = await FilterDaysOffDialogs.selectFilterDialog(context);
+              if (action != FilterDaysOffDialogsAction.canceled){
+                setState(() {
+                  // log("Change filter to $action");
+                  selectedFilter = action;
+                });
+              }
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
@@ -61,18 +96,7 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
               valueListenable: Boxes.getDayOffs().listenable(),
               builder: (context, box, _) {
                 final listDayOffs = box.values.where((element) => widget.pool.dayOffList!.contains(element));
-                if (listDayOffs.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'No day off',
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  );
-                }else{
-                  return ListView(
-                    children: listDayOffs.map((dayOff) => DayOffCardWidget(dayOff: dayOff, pool: widget.pool, callback: callback)).toList(),
-                  );
-                }
+                return FilteredDayOffList(bucket: widget.bucket, filter: selectedFilter,listDayOff: listDayOffs);
               },
             ),
           )

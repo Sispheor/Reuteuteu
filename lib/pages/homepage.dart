@@ -40,11 +40,11 @@ class _HomePageState extends State<HomePage>{
   void initState()  {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_){
-      _asyncMethod();
+      _asyncLoadDayOffFilter();
     });
   }
 
-  _asyncMethod() async {
+  _asyncLoadDayOffFilter() async {
     var _selectedFilter = await SharedPrefManager.getDayOffFilter();
       setState(() {
         selectedFilter = _selectedFilter;
