@@ -4,10 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sloth_day/adapters.dart';
 import 'package:sloth_day/pages/list_bucket.dart';
-
+import 'package:sloth_day/shared_preferences%20_manager.dart';
+import 'package:sloth_day/utils/external_storage.dart';
+import 'const.dart';
 import 'models/bucket.dart';
 import 'models/day_off.dart';
 import 'models/pool.dart';
@@ -50,7 +54,42 @@ Future<void> createTestingData(Box<Bucket> bucketBox, Box<Pool> poolBox, Box<Day
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
+
+  bool useLocalDb = true;
+  // check if we got an access to external storage
+  var status = await Permission.manageExternalStorage.status;
+  if (status.isDenied && await SharedPrefManager.hasStorageRequestBeenAsked()) {
+    log("manageExternalStorage perm is not granted and already been asked");
+    useLocalDb = true;
+  }else{
+    // if (await Permission.storage.request().isGranted && await Permission.manageExternalStorage.request().isGranted) {
+    // try to get local access
+    if (await Permission.manageExternalStorage.request().isGranted) {
+      useLocalDb = false;
+      // Either the permission was already granted before or the user just granted it.
+      log("External storage allowed. Placing files in Documents");
+      // create a directory for the db
+      String createdPath = await ExtStorage.createFolderInPublicDir(
+        type: ExtPublicDir.Documents,
+        folderName: dbFolderName,
+      );
+      await Hive.initFlutter(createdPath);
+    }else{
+      log("External storage not allowed. Placing files in app folder");
+      Fluttertoast.showToast(
+        msg: "Database files will not be reachable from external apps to be saved",  // message
+        toastLength: Toast.LENGTH_SHORT, // length
+        gravity: ToastGravity.CENTER,    // location
+      );
+      SharedPrefManager.setStorageRequestBeenAsked(true);
+    }
+  }
+
+  if (useLocalDb){
+    // local
+    await Hive.initFlutter();
+  }
+
   Hive.registerAdapter(ColorAdapter());
   Hive.registerAdapter(DayOffAdapter());
   Hive.registerAdapter(PoolAdapter());
@@ -60,10 +99,10 @@ void main() async {
   var poolBox = await Hive.openBox<Pool>('pools');
   var dayOffBox = await Hive.openBox<DayOff>('day_offs');
 
-  if (kDebugMode){
-    log("App started with debug mode. Creating testing data");
-    createTestingData(bucketBox, poolBox, dayOffBox);
-  }
+  // if (kDebugMode){
+  //   log("App started with debug mode. Creating testing data");
+  //   createTestingData(bucketBox, poolBox, dayOffBox);
+  // }
 
   runApp(const MyApp());
 }

@@ -28,4 +28,19 @@ class SharedPrefManager{
     log("[SharedPrefManager] Saved FilterDaysOffDialogsAction: $value");
   }
 
+  static hasStorageRequestBeenAsked() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? storageRequestBeenAsked = prefs.getBool(storageAskedPrefKey);
+    log("storageRequestBeenAsked from shared: $storageRequestBeenAsked");
+    if (storageRequestBeenAsked != null) {
+      return storageRequestBeenAsked;
+    }
+    return false;
+  }
+
+  static setStorageRequestBeenAsked(value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(storageAskedPrefKey, value);
+    log("[SharedPrefManager] Saved storageAskedPrefKey: $value");
+  }
 }
