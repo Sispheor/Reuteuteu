@@ -9,7 +9,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sloth_day/adapters.dart';
 import 'package:sloth_day/pages/list_bucket.dart';
-import 'package:sloth_day/shared_preferences%20_manager.dart';
+import 'package:sloth_day/utils/shared_preferences%20_manager.dart';
 import 'package:sloth_day/utils/external_storage.dart';
 import 'const.dart';
 import 'models/bucket.dart';

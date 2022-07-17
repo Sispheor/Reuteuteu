@@ -4,19 +4,23 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import '../shared_preferences _manager.dart';
+import '../utils/shared_preferences _manager.dart';
 
 final List<String> filters = ["byDateStart", "byDateEnd", "byDateCreated", "canceled"];
-enum FilterDaysOffDialogsAction { byDateStart, byDateEnd, byDateCreated , canceled }
+
+enum FilterDaysOffAction {changed, canceled}
+enum DayOffDateFilter { byDateStart, byDateEnd, byDateCreated }
+enum FilterDaysOffDialogsAllPastFuture { allDays, onlyPastDays, onlyFutureDays }
 
 
 class FilterDaysOffDialogs {
-  static Future<FilterDaysOffDialogsAction> selectFilterDialog(
+  static Future<DayOffDateFilter> selectFilterDialog(
       BuildContext context,
       ) async {
 
     log("Enter FilterDaysOffDialogs");
-    var _selectedFilter = await SharedPrefManager.getDayOffFilter();
+    var _selectedStartEndFilter = await SharedPrefManager.getStartEndDayOffFilter();
+    var _selectedAllPastFutureFilter = await SharedPrefManager.getPastFutureDayOffFilter();
 
     final action = await showDialog(
         context: context,
@@ -29,48 +33,85 @@ class FilterDaysOffDialogs {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  title: const Text("Select a filter"),
+                  title: const Text("Select filters"),
                   content: Column(
                     children: <Widget>[
                       ListTile(
                         title: const Text('By date start'),
-                        leading: Radio<FilterDaysOffDialogsAction>(
-                          value: FilterDaysOffDialogsAction.byDateStart,
-                          groupValue: _selectedFilter,
-                          onChanged: (FilterDaysOffDialogsAction? value) async {
+                        leading: Radio<DayOffDateFilter>(
+                          value: DayOffDateFilter.byDateStart,
+                          groupValue: _selectedStartEndFilter,
+                          onChanged: (DayOffDateFilter? value) async {
                             setState(() {
-                              _selectedFilter = value;
+                              _selectedStartEndFilter = value;
                             });
-                            log("Selected filter: byDateStart. Saving in pref");
-                            await SharedPrefManager.setDayOffFilter(value);
                           },
                         ),
                       ),
                       ListTile(
                         title: const Text('By date end'),
-                        leading: Radio<FilterDaysOffDialogsAction>(
-                          value: FilterDaysOffDialogsAction.byDateEnd,
-                          groupValue: _selectedFilter,
-                          onChanged: (FilterDaysOffDialogsAction? value) async {
+                        leading: Radio<DayOffDateFilter>(
+                          value: DayOffDateFilter.byDateEnd,
+                          groupValue: _selectedStartEndFilter,
+                          onChanged: (DayOffDateFilter? value) async {
                             setState(() {
-                              _selectedFilter = value;
+                              _selectedStartEndFilter = value;
                             });
-                            log("Selected filter: byDateEnd. Saving in pref");
-                            await SharedPrefManager.setDayOffFilter(value);
                           },
                         ),
                       ),
                       ListTile(
                         title: const Text('By creation date'),
-                        leading: Radio<FilterDaysOffDialogsAction>(
-                          value: FilterDaysOffDialogsAction.byDateCreated,
-                          groupValue: _selectedFilter,
-                          onChanged: (FilterDaysOffDialogsAction? value) async {
+                        leading: Radio<DayOffDateFilter>(
+                          value: DayOffDateFilter.byDateCreated,
+                          groupValue: _selectedStartEndFilter,
+                          onChanged: (DayOffDateFilter? value) async {
                             setState(() {
-                              _selectedFilter = value;
+                              _selectedStartEndFilter = value;
                             });
-                            log("Selected filter: byDateCreated. Saving in pref");
-                            await SharedPrefManager.setDayOffFilter(value);
+                          },
+                        ),
+                      ),
+                      const Divider(thickness: 3),
+                      ListTile(
+                        title: const Text('Show all'),
+                        leading: Radio<FilterDaysOffDialogsAllPastFuture>(
+                          value: FilterDaysOffDialogsAllPastFuture.allDays,
+                          groupValue: _selectedAllPastFutureFilter,
+                          onChanged: (FilterDaysOffDialogsAllPastFuture? value) async {
+                            setState(() {
+                              if (value != null){
+                                _selectedAllPastFutureFilter = value;
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                      ListTile(
+                        title: const Text('Only past days'),
+                        leading: Radio<FilterDaysOffDialogsAllPastFuture>(
+                          value: FilterDaysOffDialogsAllPastFuture.onlyPastDays,
+                          groupValue: _selectedAllPastFutureFilter,
+                          onChanged: (FilterDaysOffDialogsAllPastFuture? value) async {
+                            setState(() {
+                              if (value != null){
+                                _selectedAllPastFutureFilter = value;
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                      ListTile(
+                        title: const Text('Only future days'),
+                        leading: Radio<FilterDaysOffDialogsAllPastFuture>(
+                          value: FilterDaysOffDialogsAllPastFuture.onlyFutureDays,
+                          groupValue: _selectedAllPastFutureFilter,
+                          onChanged: (FilterDaysOffDialogsAllPastFuture? value) async {
+                            setState(() {
+                              if (value != null){
+                                _selectedAllPastFutureFilter = value;
+                              }
+                            });
                           },
                         ),
                       ),
@@ -78,7 +119,12 @@ class FilterDaysOffDialogs {
                   ),
                   actions: <Widget>[
                     ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(_selectedFilter),
+                      onPressed: () async {
+                        log("Selected filter: byDateCreated. Saving in pref");
+                        await SharedPrefManager.setStartEndDayOffFilter(_selectedStartEndFilter);
+                        await SharedPrefManager.setPastFutureDayOffFilter(_selectedAllPastFutureFilter);
+                        Navigator.of(context).pop(_selectedStartEndFilter);
+                      },
                       child: const Text('Ok'),
                       style: ElevatedButton.styleFrom(
                           primary: Colors.green
@@ -88,6 +134,6 @@ class FilterDaysOffDialogs {
                 );}); // here
         }
     );
-    return (action != null) ? action : FilterDaysOffDialogsAction.canceled;
+    return (action != null) ? action : FilterDaysOffAction.canceled;
   }
 }

@@ -1,22 +1,34 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:path/path.dart' as Path;
+import 'package:path/path.dart' as path_manager;
 import 'package:path_provider/path_provider.dart';
 
 
 enum ExtPublicDir {
+  // ignore: constant_identifier_names
   Music,
+  // ignore: constant_identifier_names
   PodCasts,
+  // ignore: constant_identifier_names
   Ringtones,
+  // ignore: constant_identifier_names
   Alarms,
+  // ignore: constant_identifier_names
   Notifications,
+  // ignore: constant_identifier_names
   Pictures,
+  // ignore: constant_identifier_names
   Movies,
+  // ignore: constant_identifier_names
   Download,
+  // ignore: constant_identifier_names
   DCIM,
+  // ignore: constant_identifier_names
   Documents,
+  // ignore: constant_identifier_names
   Screenshots,
+  // ignore: constant_identifier_names
   Audiobooks,
 }
 
@@ -46,7 +58,7 @@ class ExtStorage {
     log("createFolderInPublicDir:_appDocDir:${_appDocDir.toString()}");
 
     var values = _appDocDir.split(Platform.pathSeparator);
-    values.forEach(print);
+    // values.forEach(print);
 
     var dim = values.length - 4; // Android/Data/package.name/files
     _appDocDir = "";
@@ -69,7 +81,7 @@ class ExtStorage {
       //if folder not exists create folder and then return its path
       final _appDocDirNewFolder =
       await Directory(_appDocDir).create(recursive: true);
-      final pathNorma = Path.normalize(_appDocDirNewFolder.path);
+      final pathNorma = path_manager.normalize(_appDocDirNewFolder.path);
       log("createFolderInPublicDir:ToCreate:pathNorma:$pathNorma");
 
       return pathNorma;

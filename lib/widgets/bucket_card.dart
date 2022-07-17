@@ -11,12 +11,12 @@ import 'edit_delete_menu_item.dart';
 
 class BucketCardWidget extends StatefulWidget {
 
-  BucketCardWidget({
+  const BucketCardWidget({
     Key? key,
     required this.bucket
   }) : super(key: key);
 
-  Bucket bucket;
+  final Bucket bucket;
 
   @override
   State<BucketCardWidget> createState() => _BucketCardWidgetState();

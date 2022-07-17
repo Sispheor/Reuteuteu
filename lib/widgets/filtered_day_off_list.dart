@@ -11,12 +11,13 @@ import 'dialog_filter_days_off.dart';
 class FilteredDayOffList extends StatefulWidget {
   final Bucket bucket;
   final Iterable<DayOff> listDayOff;
-  final FilterDaysOffDialogsAction? filter;
+  final DayOffDateFilter? startEndDayOffFilter;
+  final FilterDaysOffDialogsAllPastFuture? pastFutureDayOffFilter;
 
   const FilteredDayOffList({
     Key? key,
     required this.listDayOff,
-    required this.filter, required this.bucket
+    required this.startEndDayOffFilter, required this.bucket, this.pastFutureDayOffFilter
   }) : super(key: key);
 
   @override
@@ -31,6 +32,8 @@ class _FilteredDayOffListState extends State<FilteredDayOffList> {
     });
   }
 
+  DateTime now = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     final dayOffCopy = [...widget.listDayOff.toList()];
@@ -42,15 +45,23 @@ class _FilteredDayOffListState extends State<FilteredDayOffList> {
         ),
       );
     } else {
-      if (widget.filter != null && widget.filter == FilterDaysOffDialogsAction.byDateStart) {
-        log("Applying new filter: ${widget.filter}");
+      if (widget.startEndDayOffFilter != null && widget.startEndDayOffFilter == DayOffDateFilter.byDateStart) {
+        log("Applying new filter: ${widget.startEndDayOffFilter}");
         dayOffCopy.sort((a, b) => a.dateStart.compareTo(b.dateStart));
         // log(dayOffCopy.toString());
       }
-      if (widget.filter != null && widget.filter == FilterDaysOffDialogsAction.byDateEnd) {
-        log("Applying new filter: ${widget.filter}");
+      if (widget.startEndDayOffFilter != null && widget.startEndDayOffFilter == DayOffDateFilter.byDateEnd) {
+        log("Applying new filter: ${widget.startEndDayOffFilter}");
         dayOffCopy.sort((a, b) => a.dateEnd.compareTo(b.dateEnd));
         // log(dayOffCopy.toString());
+      }
+      if (widget.pastFutureDayOffFilter != null && widget.pastFutureDayOffFilter == FilterDaysOffDialogsAllPastFuture.onlyPastDays){
+        log("Applying new filter: ${widget.pastFutureDayOffFilter}");
+        dayOffCopy.removeWhere((element) => element.dateStart.isAfter(now));
+      }
+      if (widget.pastFutureDayOffFilter != null && widget.pastFutureDayOffFilter == FilterDaysOffDialogsAllPastFuture.onlyFutureDays){
+        log("Applying new filter: ${widget.pastFutureDayOffFilter}");
+        dayOffCopy.removeWhere((element) => element.dateStart.isBefore(now));
       }
       return ListView(
         children: dayOffCopy.map((dayOff) => DayOffCardWidget(dayOff: dayOff, callback: callback, pool: _getPoolOfDayOff(dayOff))).toList(),

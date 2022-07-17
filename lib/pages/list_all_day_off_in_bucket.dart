@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -6,7 +5,6 @@ import 'package:sloth_day/hive_boxes.dart';
 import 'package:sloth_day/models/bucket.dart';
 import 'package:sloth_day/models/day_off.dart';
 import 'package:sloth_day/models/pool.dart';
-import 'package:sloth_day/widgets/day_off_card.dart';
 import 'package:sloth_day/widgets/dialog_filter_days_off.dart';
 
 import '../widgets/filtered_day_off_list.dart';
@@ -14,9 +12,10 @@ import '../widgets/filtered_day_off_list.dart';
 class ListDayOff extends StatefulWidget{
 
   final Bucket bucket;
-  final FilterDaysOffDialogsAction? filter;
+  final DayOffDateFilter? startEndDayOffFilter;
+  final FilterDaysOffDialogsAllPastFuture? pastFutureDayOffFilter;
 
-  const ListDayOff({Key? key, required this.bucket, this.filter }) : super(key: key);
+  const ListDayOff({Key? key, required this.bucket, this.startEndDayOffFilter, this.pastFutureDayOffFilter }) : super(key: key);
 
   @override
   _ListDayOffState createState() => _ListDayOffState();
@@ -50,7 +49,8 @@ class _ListDayOffState extends State<ListDayOff> {
         builder: (context, box, _) {
           final daysOff = box.values.where((dayOff) => isDayOffPartOfTheCurrentBucket(dayOff));
           return FilteredDayOffList(bucket: widget.bucket,
-              filter: widget.filter,
+              startEndDayOffFilter: widget.startEndDayOffFilter,
+              pastFutureDayOffFilter: widget.pastFutureDayOffFilter,
               listDayOff: daysOff);
         },
       ),

@@ -7,7 +7,7 @@ import 'package:sloth_day/pages/create_or_edit_pool.dart';
 import 'package:sloth_day/pages/list_all_day_off_in_bucket.dart';
 import 'package:sloth_day/pages/list_pool.dart';
 
-import '../shared_preferences _manager.dart';
+import '../utils/shared_preferences _manager.dart';
 import '../widgets/dialog_filter_days_off.dart';
 
 
@@ -27,7 +27,8 @@ class _HomePageState extends State<HomePage>{
 
   int _selectedIndex = 0;
   final PageController controller = PageController();
-  FilterDaysOffDialogsAction? selectedFilter;
+  DayOffDateFilter? selectedStartEndDayOffFilter;
+  FilterDaysOffDialogsAllPastFuture? selectedPastFutureDayOffFilter;
 
   callback(){
     setState(() {
@@ -40,15 +41,17 @@ class _HomePageState extends State<HomePage>{
   void initState()  {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_){
-      _asyncLoadDayOffFilter();
+      _asyncLoadDayOffFilters();
     });
   }
 
-  _asyncLoadDayOffFilter() async {
-    var _selectedFilter = await SharedPrefManager.getDayOffFilter();
-      setState(() {
-        selectedFilter = _selectedFilter;
-      });
+  _asyncLoadDayOffFilters() async {
+    var _selectedStartEndFilter = await SharedPrefManager.getStartEndDayOffFilter();
+    var _selectedPastFutureFilter = await SharedPrefManager.getPastFutureDayOffFilter();
+    setState(() {
+      selectedStartEndDayOffFilter = _selectedStartEndFilter;
+      selectedPastFutureDayOffFilter = _selectedPastFutureFilter;
+    });
   }
 
   @override
@@ -56,7 +59,7 @@ class _HomePageState extends State<HomePage>{
     List<Widget> _pages = <Widget>[
       ListPool(bucket: widget.bucket),
       CalendarPage(bucket: widget.bucket),
-      ListDayOff(bucket: widget.bucket, filter: selectedFilter),
+      ListDayOff(bucket: widget.bucket, startEndDayOffFilter: selectedStartEndDayOffFilter, pastFutureDayOffFilter: selectedPastFutureDayOffFilter),
     ];
 
     return Scaffold(
@@ -65,18 +68,17 @@ class _HomePageState extends State<HomePage>{
         title: Text("Bucket ${widget.bucket.name}"),
         actions: <Widget>[
           if (_selectedIndex == 2)
-          IconButton(
-            icon: const Icon(Icons.filter_alt),
-            onPressed: () async {
-              final action = await FilterDaysOffDialogs.selectFilterDialog(context);
-              if (action != FilterDaysOffDialogsAction.canceled){
-                setState(() {
-                  // log("Change filter to $action");
-                  selectedFilter = action;
-                });
-              }
-            },
-          ),
+            IconButton(
+              icon: const Icon(Icons.filter_alt),
+              onPressed: () async {
+                final action = await FilterDaysOffDialogs.selectFilterDialog(context);
+                if (action != FilterDaysOffAction.canceled){
+                  setState(() {
+                    _asyncLoadDayOffFilters();
+                  });
+                }
+              },
+            ),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {

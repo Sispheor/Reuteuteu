@@ -8,10 +8,9 @@ import 'package:sloth_day/models/day_off.dart';
 import 'package:sloth_day/models/pool.dart';
 import 'package:sloth_day/pages/create_or_edit_day_off.dart';
 import 'package:sloth_day/widgets/consumption_gauge.dart';
-import 'package:sloth_day/widgets/day_off_card.dart';
 
 import '../models/bucket.dart';
-import '../shared_preferences _manager.dart';
+import '../utils/shared_preferences _manager.dart';
 import '../widgets/dialog_filter_days_off.dart';
 import '../widgets/filtered_day_off_list.dart';
 
@@ -30,7 +29,8 @@ class ListDayOffPage extends StatefulWidget {
 
 class _ListDayOffPageState extends State<ListDayOffPage>{
 
-  FilterDaysOffDialogsAction? selectedFilter;
+  DayOffDateFilter? selectedStartEndDayOffFilter;
+  FilterDaysOffDialogsAllPastFuture? selectedPastFutureDayOffFilter;
 
   callback(){
     setState(() {
@@ -43,14 +43,16 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
   void initState()  {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_){
-      _asyncLoadDayOffFilter();
+      _asyncLoadDayOffFilters();
     });
   }
 
-  _asyncLoadDayOffFilter() async {
-    var _selectedFilter = await SharedPrefManager.getDayOffFilter();
+  _asyncLoadDayOffFilters() async {
+    var _selectedStartEndFilter = await SharedPrefManager.getStartEndDayOffFilter();
+    var _selectedPastFutureFilter = await SharedPrefManager.getPastFutureDayOffFilter();
     setState(() {
-      selectedFilter = _selectedFilter;
+      selectedStartEndDayOffFilter = _selectedStartEndFilter;
+      selectedPastFutureDayOffFilter = _selectedPastFutureFilter;
     });
   }
 
@@ -65,10 +67,9 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
               icon: const Icon(Icons.filter_alt),
               onPressed: () async {
                 final action = await FilterDaysOffDialogs.selectFilterDialog(context);
-                if (action != FilterDaysOffDialogsAction.canceled){
+                if (action != FilterDaysOffAction.canceled){
                   setState(() {
-                    // log("Change filter to $action");
-                    selectedFilter = action;
+                    _asyncLoadDayOffFilters();
                   });
                 }
               },
@@ -107,7 +108,7 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
                   valueListenable: Boxes.getDayOffs().listenable(),
                   builder: (context, box, _) {
                     final listDayOffs = box.values.where((element) => widget.pool.dayOffList!.contains(element));
-                    return FilteredDayOffList(bucket: widget.bucket, filter: selectedFilter,listDayOff: listDayOffs);
+                    return FilteredDayOffList(bucket: widget.bucket, startEndDayOffFilter: selectedStartEndDayOffFilter, pastFutureDayOffFilter: selectedPastFutureDayOffFilter, listDayOff: listDayOffs);
                   },
                 ),
               )
