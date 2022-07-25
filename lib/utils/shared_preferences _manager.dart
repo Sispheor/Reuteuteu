@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sloth_day/main.dart';
 import 'package:sloth_day/widgets/dialog_filter_days_off.dart';
 
 import '../const.dart';
@@ -45,19 +46,37 @@ class SharedPrefManager{
     log("[SharedPrefManager] Saved pastFutureDayOffFilterPrefKey: $value");
   }
 
-  static hasStorageRequestBeenAsked() async {
+  static getDatabaseLocation() async {
+    DatabaseLocation? _location = DatabaseLocation.unknown;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool? storageRequestBeenAsked = prefs.getBool(storageAskedPrefKey);
-    log("storageRequestBeenAsked from shared: $storageRequestBeenAsked");
-    if (storageRequestBeenAsked != null) {
-      return storageRequestBeenAsked;
+    String? _locationAsString = prefs.getString(locationAskedPrefKey);
+    if (_locationAsString != null){
+      _location = EnumToString.fromString(DatabaseLocation.values, _locationAsString);
     }
-    return false;
+    log("[SharedPrefManager] Loaded database location: $_location");
+    return _location;
   }
 
-  static setStorageRequestBeenAsked(value) async {
+  static setDatabaseLocation(value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(storageAskedPrefKey, value);
-    log("[SharedPrefManager] Saved storageAskedPrefKey: $value");
+    await prefs.setString(locationAskedPrefKey,
+        EnumToString.convertToString(value));
+    log("[SharedPrefManager] Saved database location: $value");
   }
+
+  // static hasStorageRequestBeenAsked() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   bool? storageRequestBeenAsked = prefs.getBool(storageAskedPrefKey);
+  //   log("storageRequestBeenAsked from shared: $storageRequestBeenAsked");
+  //   if (storageRequestBeenAsked != null) {
+  //     return storageRequestBeenAsked;
+  //   }
+  //   return false;
+  // }
+  //
+  // static setStorageRequestBeenAsked(value) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   await prefs.setBool(storageAskedPrefKey, value);
+  //   log("[SharedPrefManager] Saved storageAskedPrefKey: $value");
+  // }
 }

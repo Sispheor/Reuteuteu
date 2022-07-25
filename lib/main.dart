@@ -1,122 +1,31 @@
-import 'dart:developer';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:sloth_day/adapters.dart';
 import 'package:sloth_day/pages/list_bucket.dart';
 import 'package:sloth_day/utils/shared_preferences%20_manager.dart';
-import 'package:sloth_day/utils/external_storage.dart';
-import 'const.dart';
-import 'models/bucket.dart';
-import 'models/day_off.dart';
-import 'models/pool.dart';
 
-Future<void> createTestingData(Box<Bucket> bucketBox, Box<Pool> poolBox, Box<DayOff> dayOffBox) async {
-  // clear boxes
-  await bucketBox.clear();
-  await poolBox.clear();
-  await dayOffBox.clear();
-  // testing data
-  // create buckets
-  var bucket2021 = Bucket('2022/2023');
-  bucketBox.addAll([bucket2021]);
-
-  // create pools
-  var paidVacation = Pool("Paid vacation", 25, color: Colors.blue);
-  var rtt = Pool("RTT", 10, color: Colors.green);
-  var seniority = Pool("Seniority ", 3, color: Colors.pink);
-  poolBox.addAll([paidVacation, rtt, seniority]);  // add the pools to the database
-  bucket2021.pools = HiveList(poolBox);  // create a HiveList
-  bucket2021.pools?.addAll([paidVacation, rtt, seniority]);
-  bucket2021.save(); // make persistent the changes
-
-  // create couple days off
-  var vacation1 = DayOff("Christmas leave", DateTime.utc(2022, 12, 26), DateTime.utc(2022, 12, 30), false, color: paidVacation.color);
-  var vacation2 = DayOff("Summer holidays week1", DateTime.utc(2022, 8, 8), DateTime.utc(2022, 8, 12), false, color: paidVacation.color);
-  var vacation3 = DayOff("Summer holidays week2", DateTime.utc(2022, 8, 15), DateTime.utc(2022, 8, 19), false, color: paidVacation.color);
-  var vacation4 = DayOff("Scuba diving", DateTime.utc(2022, 5, 19), DateTime.utc(2022, 5, 20), false, color: rtt.color);
-  var vacation5 = DayOff("Hike", DateTime.utc(2022, 6, 13), DateTime.utc(2022, 6, 13), true, color: seniority.color);
-  dayOffBox.addAll([vacation1, vacation2, vacation3, vacation4, vacation5]); // save to the db
-
-  // place days off in different pools
-  paidVacation.dayOffList = HiveList(dayOffBox);
-  paidVacation.dayOffList?.addAll([vacation1, vacation2, vacation3]);
-  paidVacation.save();
-
-  rtt.dayOffList = HiveList(dayOffBox);
-  rtt.dayOffList?.addAll([vacation4]);
-  rtt.save();
-
-  seniority.dayOffList = HiveList(dayOffBox);
-  seniority.dayOffList?.addAll([vacation5]);
-  seniority.save();
-  // end testing data
-}
+enum DatabaseLocation {unknown, restricted, shared}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  bool useLocalDb = true;
-  // check if we got an access to external storage
-  var status = await Permission.manageExternalStorage.status;
-  if (status.isDenied && await SharedPrefManager.hasStorageRequestBeenAsked()) {
-    log("manageExternalStorage perm is not granted and already been asked");
-    useLocalDb = true;
-  }else{
-    // if (await Permission.storage.request().isGranted && await Permission.manageExternalStorage.request().isGranted) {
-    // try to get local access
-    if (await Permission.manageExternalStorage.request().isGranted) {
-      useLocalDb = false;
-      // Either the permission was already granted before or the user just granted it.
-      log("External storage allowed. Placing files in Documents");
-      // create a directory for the db
-      String createdPath = await ExtStorage.createFolderInPublicDir(
-        type: ExtPublicDir.Documents,
-        folderName: dbFolderName,
-      );
-      await Hive.initFlutter(createdPath);
-    }else{
-      log("External storage not allowed. Placing files in app folder");
-      Fluttertoast.showToast(
-        msg: "Database files will not be reachable from external apps to be saved",  // message
-        toastLength: Toast.LENGTH_SHORT, // length
-        gravity: ToastGravity.CENTER,    // location
-      );
-      SharedPrefManager.setStorageRequestBeenAsked(true);
-    }
-  }
-
-  if (useLocalDb){
-    // local
-    await Hive.initFlutter();
-  }
-
-  Hive.registerAdapter(ColorAdapter());
-  Hive.registerAdapter(DayOffAdapter());
-  Hive.registerAdapter(PoolAdapter());
-  Hive.registerAdapter(BucketAdapter());
-
-  var bucketBox = await Hive.openBox<Bucket>('buckets');
-  var poolBox = await Hive.openBox<Pool>('pools');
-  var dayOffBox = await Hive.openBox<DayOff>('day_offs');
-
-  // if (kDebugMode){
-  //   log("App started with debug mode. Creating testing data");
-  //   createTestingData(bucketBox, poolBox, dayOffBox);
-  // }
-
-  runApp(const MyApp());
+  runApp(const SlothDay());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class SlothDay extends StatefulWidget {
 
-  // This widget is the root of your application.
+
+  const SlothDay({Key? key}) : super(key: key);
+
+  @override
+  State<SlothDay> createState() => _SlothDayState();
+}
+
+class _SlothDayState extends State<SlothDay> {
+
+  Future<DatabaseLocation> _asyncGetDatabaseLocation() async {
+    return await SharedPrefManager.getDatabaseLocation();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -129,7 +38,110 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.dark, // Or [ThemeMode.dark]
       theme: NordTheme.light(),
       darkTheme: NordTheme.dark(),
-      home: const ListBucketPage(),
+      // home: const ListBucketPage(),
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: NordColors.polarNight.darkest,
+          title: const Text('Select database location'),
+        ),
+        body: FutureBuilder<DatabaseLocation>(
+          future: _asyncGetDatabaseLocation(),
+          initialData: DatabaseLocation.unknown,
+          builder: (BuildContext context, AsyncSnapshot<DatabaseLocation> snapshot) {
+            if (snapshot.hasError) {
+              return const Text('Error');
+            }
+            if (!snapshot.hasData) {
+              // while data is loading:
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              if (snapshot.data == DatabaseLocation.unknown){
+                return  Center(
+                  child: Card(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        const ListTile(
+                          leading: Icon(Icons.phonelink_lock),
+                          title: Text('Database in a private folder'),
+                          subtitle: Text('Database files are placed into a private folder. Files are not visible from an external app like a file browser. '
+                              'Data are destroyed when the app is deleted. \n\n\nNote: No extra permission required.'),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            ElevatedButton(
+                              child: const Text('Select'),
+                              onPressed: () {
+                                // set in pref the selected location
+                                SharedPrefManager.setDatabaseLocation(DatabaseLocation.restricted);
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ListBucketPage(databaseLocation: DatabaseLocation.restricted)),
+                                      (Route<dynamic> route) => false,
+                                );
+                              },
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                        ),
+                        Container(
+                            height: 10,
+                            color: NordColors.polarNight.darkest
+                        ),
+                        const ListTile(
+                          leading: Icon(Icons.smartphone),
+                          title: Text('Database in a shared folder'),
+                          subtitle: Text('The database files are placed into a folder placed into the \'Documents\' folder of your phone. Files are visible from third party application. Data are still present after deleting the app.'
+                              ' Select this mode if you want to synchronize the database with a cloud app like NextCloud, Google Drive or OneDrive. \n\nNote: Permission to access the shared storage will be asked.'),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            ElevatedButton(
+                              child: const Text('Select'),
+                              onPressed: () {
+                                SharedPrefManager.setDatabaseLocation(DatabaseLocation.shared);
+                                Navigator.pushReplacement (
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const ListBucketPage(databaseLocation: DatabaseLocation.shared))
+                                );
+                              },
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                );
+
+              }
+              if (snapshot.data == DatabaseLocation.restricted){
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ListBucketPage(databaseLocation: DatabaseLocation.restricted))
+                  );
+                });
+              }
+              if (snapshot.data == DatabaseLocation.shared){
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ListBucketPage(databaseLocation: DatabaseLocation.shared))
+                  );
+                });
+              }
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        ),
+      ),
     );
   }
 }
