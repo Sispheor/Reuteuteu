@@ -2,7 +2,7 @@
     package="dev.sispheor.sloth_day">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+<!--    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />-->
     <application
         android:label="Sloth Day"
         android:name="${applicationName}"
@@ -26,6 +26,22 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"  />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:host="*"  />
+                <data android:mimeType="*/*" />
+                <!-- https://stackoverflow.com/a/52384331/109219 ?? -->
+                <data android:pathPattern=".*\\.codeux" />
+                <data android:pathPattern=".*\\..*\\.codeux" />
+                <data android:pathPattern=".*\\..*\\..*\\.codeux" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.codeux" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.codeux" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.*\\..*\\.codeux" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

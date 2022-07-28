@@ -1,5 +1,8 @@
 import 'dart:developer';
+import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -13,6 +16,7 @@ import 'package:sloth_day/main.dart';
 import 'package:sloth_day/models/day_off.dart';
 import 'package:sloth_day/models/pool.dart';
 import 'package:sloth_day/pages/create_or_edit_bucket.dart';
+import 'package:sloth_day/utils/android_file_interface.dart';
 import 'package:sloth_day/utils/external_storage.dart';
 import 'package:sloth_day/utils/shared_preferences%20_manager.dart';
 import 'package:sloth_day/widgets/bucket_card.dart';
@@ -41,6 +45,10 @@ class _ListBucketPageState extends State<ListBucketPage> {
     _databaseLoadedOnce = isDataBaseLoaded();
   }
 
+  Future<File> _localFile(String documentPath) async {
+    // final path = await documentPath;
+    return File('$documentPath/buckets.hive');
+  }
 
   Future<bool> isDataBaseLoaded() async {
     if (_databaseLoadedOnce != null && _databaseLoadedOnce == true){
@@ -51,11 +59,39 @@ class _ListBucketPageState extends State<ListBucketPage> {
       await Hive.initFlutter();
     }else{
       // try to get the storage perm
-      if (await Permission.manageExternalStorage.request().isGranted) {
+      if (await Permission.storage.request().isGranted) {
         String createdPath = await ExtStorage.createFolderInPublicDir(
           type: ExtPublicDir.Documents,
           folderName: dbFolderName,
         );
+        // check if we have read rights
+        bool bucketDb = await File('$createdPath/buckets.hive').exists();
+        if (bucketDb){
+          log("buckets.hive exist already. Trying read access");
+          // get the file
+          File existingDB = File('$createdPath/buckets.hive');
+          // Read the file
+          try{
+            Uint8List contents = await existingDB.readAsBytes();
+            log("Read access ok");
+          }catch (e) {
+            log("Read access refused ${e}");
+            // poc file picker
+            // String? selectedDirectory = await FilePicker.platform.getDirectoryPath(initialDirectory: createdPath);
+            // if (selectedDirectory == null) {
+            //   // User canceled the picker
+            //   return false;
+            // }
+
+            // poc file picker writable
+            final AndroidInterface _androidInterface = AndroidInterface();
+            final contentRoot = await _androidInterface.selectDirectory();
+
+          }
+
+        }
+
+        // init the database with the Document folder
         await Hive.initFlutter(createdPath);
       }else{ // storage perm refused by the user, go back to selection
         await SharedPrefManager.setDatabaseLocation(DatabaseLocation.unknown);
