@@ -45,11 +45,6 @@ class _ListBucketPageState extends State<ListBucketPage> {
     _databaseLoadedOnce = isDataBaseLoaded();
   }
 
-  Future<File> _localFile(String documentPath) async {
-    // final path = await documentPath;
-    return File('$documentPath/buckets.hive');
-  }
-
   Future<bool> isDataBaseLoaded() async {
     if (_databaseLoadedOnce != null && _databaseLoadedOnce == true){
       return true;

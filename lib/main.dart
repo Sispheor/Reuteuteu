@@ -23,7 +23,9 @@ class SlothDay extends StatefulWidget {
 class _SlothDayState extends State<SlothDay> {
 
   Future<DatabaseLocation> _asyncGetDatabaseLocation() async {
-    return await SharedPrefManager.getDatabaseLocation();
+    // TODO remove this once storage is not fixed
+    // return await SharedPrefManager.getDatabaseLocation();
+    return DatabaseLocation.restricted;
   }
 
   @override
