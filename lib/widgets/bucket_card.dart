@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sloth_day/models/bucket.dart';
-import 'package:sloth_day/models/day_off.dart';
-import 'package:sloth_day/models/pool.dart';
-import 'package:sloth_day/pages/create_or_edit_bucket.dart';
 import 'package:sloth_day/pages/homepage.dart';
-import 'package:sloth_day/widgets/dialog_confirm_cancel.dart';
 
-import 'edit_delete_menu_item.dart';
 
 
 class BucketCardWidget extends StatefulWidget {
@@ -32,12 +27,18 @@ class _BucketCardWidgetState extends State<BucketCardWidget> {
           children: <Widget>[
             ListTile(
               title: Text(widget.bucket.name),
-              trailing: PopupMenuButton(
-                  onSelected: (value) {
-                    _onMenuItemSelected(value as Options);
-                  },
-                  icon: const Icon(Icons.more_vert),
-                  itemBuilder: (context) => popupMenuItemEditDelete()
+              trailing: IconButton(
+                  icon: const Icon(Icons.keyboard_arrow_right,
+                      color: Colors.white,
+                      size: 30.0),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return HomePage(bucket: widget.bucket);
+                      }),
+                    );
+                  }
               ),
               onTap: () {
                   Navigator.push(
@@ -52,33 +53,5 @@ class _BucketCardWidgetState extends State<BucketCardWidget> {
         ),
       ),
     );
-  }
-
-  Future<void> _onMenuItemSelected(Options value) async {
-    if (value == Options.edit) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (_) => CreateOrEditBucketPage(isEdit: true, bucket: widget.bucket))
-      ).then((_) => setState(() {}));
-    }
-    if (value == Options.delete) {
-      final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete bucket '${widget.bucket.name}'?", 'Confirm');
-      if (action == DialogAction.confirmed) {
-        _performRecursiveDeletion(widget.bucket);
-      }
-    }
-  }
-
-  void _performRecursiveDeletion(Bucket bucket) {
-    if (bucket.pools != null){
-      for (Pool pool in bucket.pools!.castHiveList()){
-        if (pool.dayOffList != null){
-          for (DayOff dayOff in pool.dayOffList!.castHiveList()){
-            dayOff.delete();
-          }
-        }
-        pool.delete();
-      }
-      bucket.delete();
-    }
   }
 }

@@ -7,7 +7,10 @@ import 'package:sloth_day/hive_boxes.dart';
 import 'package:sloth_day/models/day_off.dart';
 import 'package:sloth_day/models/pool.dart';
 import 'package:sloth_day/pages/create_or_edit_day_off.dart';
+import 'package:sloth_day/pages/create_or_edit_pool.dart';
 import 'package:sloth_day/widgets/consumption_gauge.dart';
+import 'package:sloth_day/widgets/dialog_confirm_cancel.dart';
+import 'package:sloth_day/widgets/edit_delete_menu_item.dart';
 
 import '../models/bucket.dart';
 import '../utils/shared_preferences _manager.dart';
@@ -74,14 +77,22 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
                 }
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(isEdit: false, pool: widget.pool))).then((_) => setState(() {}));
-              },
+            PopupMenuButton(
+                onSelected: (value) {
+                  _onMenuItemSelected(value as Options);
+                },
+                icon: const Icon(Icons.more_vert),
+                itemBuilder: (context) => popupMenuItemEditDelete()
             )
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => CreateOrEditDayOffPage(isEdit: false, pool: widget.pool))).then((_) => setState(() {}));
+          },
+          backgroundColor: Colors.green,
+          child: const Icon(Icons.add),
         ),
         body: Container(
           constraints: const BoxConstraints.expand(),
@@ -91,10 +102,7 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
                 fit: BoxFit.fitWidth,
                 alignment: Alignment.bottomCenter),
           ),
-          child:
-
-
-          Column(
+          child: Column(
             children: [
               if (widget.pool.dayOffList != null && widget.pool.dayOffList!.isNotEmpty)
                 Card(
@@ -112,13 +120,41 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
                         startEndDayOffFilter: selectedStartEndDayOffFilter,
                         pastFutureDayOffFilter: selectedPastFutureDayOffFilter,
                         listDayOff: listDayOffs,
-                    callback: callback);
+                        callback: callback);
                   },
                 ),
               )
             ],
           ),
-
-        ));
+        )
+    );
   }
+
+  void _performRecursiveDeletion(Pool pool) {
+    if (pool.dayOffList != null){
+      for (DayOff dayOff in pool.dayOffList!.castHiveList()){
+        dayOff.delete();
+      }
+    }
+    pool.delete();
+  }
+
+  Future<void> _onMenuItemSelected(Options value) async {
+    if (value == Options.edit) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => CreateOrEditPoolPage(isEdit: true, bucket: widget.bucket, pool: widget.pool))
+      ).then((_) => setState(() {callback();}));
+    }
+    if (value == Options.delete) {
+      final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete pool '${widget.pool.name}'?", 'Confirm');
+      if (action == DialogAction.confirmed) {
+        _performRecursiveDeletion(widget.pool);
+        Navigator.pop(context);
+      }
+    }
+  }
+
+
+
+
 }

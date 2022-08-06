@@ -130,22 +130,22 @@ class _ListBucketPageState extends State<ListBucketPage> {
           appBar: AppBar(
             backgroundColor: NordColors.polarNight.darkest,
             title: const Text("SlothDay"),
-            actions: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const CreateOrEditBucketPage(isEdit: false)));
-                },
-              )
-            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => const CreateOrEditBucketPage(isEdit: false)));
+            },
+            backgroundColor: Colors.green,
+            child: const Icon(Icons.add),
           ),
           body: Container(
               constraints: const BoxConstraints.expand(),
               decoration: const BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage("assets/images/sloth5.png"),
-                    fit: BoxFit.fitWidth),
+                    fit: BoxFit.fitWidth,
+                    alignment: Alignment.bottomCenter),
               ),
               child: FutureBuilder<bool>(
                   future: _databaseLoadedOnce,

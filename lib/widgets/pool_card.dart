@@ -31,8 +31,8 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-        color: NordColors.$3.withOpacity(0.6),
-        child: InkWell(
+      color: NordColors.$3.withOpacity(0.6),
+      child:  ListTile(
           onTap: () {
             Navigator.push(
               context,
@@ -41,70 +41,29 @@ class _PoolCardWidgetState extends State<PoolCardWidget> {
               }),
             ).then((_) => setState(() { widget.callback();}));
           },
-          child: Column(
-            children: [
-              ListTile(
-                title: Text(widget.pool.name, style: TextStyle(color: widget.pool.color, fontWeight: FontWeight.bold)),
-                subtitle: Text("${removeDecimalZeroFormat(widget.pool.getTotalTakenDays())} taken / ${widget.pool.maxDays}",
-                  style: const TextStyle(color: NordColors.$6),
-                ),
-                trailing: PopupMenuButton(
-                    onSelected: (value) {
-                      _onMenuItemSelected(value as Options);
-                    },
-                    icon: const Icon(Icons.more_vert),
-                    itemBuilder: (context) => popupMenuItemEditDelete()
-                ),
-
-              ),
-              Container(
-                constraints: const BoxConstraints(
-                    maxHeight: 80
-                ),
-                child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          removeDecimalZeroFormat(widget.pool.getAvailableDays()),
-                          style: TextStyle(color: widget.pool.color, fontSize: 50, fontWeight: FontWeight.bold),
-                        ),
-                        const Text(
-                          "days available",
-                          style: TextStyle(color: NordColors.$6),
-                        ),
-                      ],
-                    )
-                ),
-              ),
-            ],
+          leading: Text(
+            removeDecimalZeroFormat(widget.pool.getAvailableDays()),
+            style: TextStyle(color: widget.pool.color, fontSize: 50, fontWeight: FontWeight.bold),
           ),
-        )
+          title: Text(widget.pool.name, style: TextStyle(color: widget.pool.color, fontWeight: FontWeight.bold)),
+          subtitle: Text("${removeDecimalZeroFormat(widget.pool.getTotalTakenDays())} taken / ${widget.pool.maxDays}",
+            style: const TextStyle(color: NordColors.$6),
+          ),
+          trailing: IconButton(
+              icon: const Icon(Icons.keyboard_arrow_right,
+                  color: Colors.white,
+                  size: 30.0),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return ListDayOffPage(bucket: widget.bucket, pool: widget.pool);
+                  }),
+                ).then((_) => setState(() { widget.callback();}));
+              }
+          ),
+
+      ),
     );
-  }
-
-  void _performRecursiveDeletion(Pool pool) {
-    if (pool.dayOffList != null){
-      for (DayOff dayOff in pool.dayOffList!.castHiveList()){
-        dayOff.delete();
-      }
-    }
-    pool.delete();
-  }
-
-  Future<void> _onMenuItemSelected(Options value) async {
-    if (value == Options.edit) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (_) => CreateOrEditPoolPage(isEdit: true, bucket: widget.bucket, pool: widget.pool))
-      ).then((_) => setState(() {widget.callback();}));
-    }
-    if (value == Options.delete) {
-      final action = await ConfirmCancelDialogs.yesAbortDialog(context, "Delete pool '${widget.pool.name}'?", 'Confirm');
-      if (action == DialogAction.confirmed) {
-        _performRecursiveDeletion(widget.pool);
-        widget.callback();
-      }
-    }
   }
 }
