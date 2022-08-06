@@ -13,11 +13,15 @@ class FilteredDayOffList extends StatefulWidget {
   final Iterable<DayOff> listDayOff;
   final DayOffDateFilter? startEndDayOffFilter;
   final FilterDaysOffDialogsAllPastFuture? pastFutureDayOffFilter;
+  final VoidCallback? callback;
 
   const FilteredDayOffList({
     Key? key,
     required this.listDayOff,
-    required this.startEndDayOffFilter, required this.bucket, this.pastFutureDayOffFilter
+    required this.startEndDayOffFilter,
+    required this.bucket,
+    this.pastFutureDayOffFilter,
+    this.callback
   }) : super(key: key);
 
   @override
@@ -29,6 +33,9 @@ class _FilteredDayOffListState extends State<FilteredDayOffList> {
 
   callback(){
     setState(() {
+      if (widget.callback != null){
+        widget.callback!();
+      }
     });
   }
 

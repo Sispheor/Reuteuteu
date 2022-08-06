@@ -27,14 +27,15 @@ class Bucket extends HiveObject {
   }
 
   double getTakenDays() {
-    if (pools == null){
+    if (pools == null || pools!.isEmpty){
       return 0;
+    }else{
+      double takenDay = 0;
+      for (Pool pool in pools!.castHiveList()){
+        takenDay += pool.getTotalTakenDays();
+      }
+      return takenDay;
     }
-    double takenDay = 0;
-    for (Pool pool in pools!.castHiveList()){
-      takenDay += pool.getTotalTakenDays();
-    }
-    return takenDay;
   }
 
   double getAvailable(){

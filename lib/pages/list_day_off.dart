@@ -108,7 +108,11 @@ class _ListDayOffPageState extends State<ListDayOffPage>{
                   valueListenable: Boxes.getDayOffs().listenable(),
                   builder: (context, box, _) {
                     final listDayOffs = box.values.where((element) => widget.pool.dayOffList!.contains(element));
-                    return FilteredDayOffList(bucket: widget.bucket, startEndDayOffFilter: selectedStartEndDayOffFilter, pastFutureDayOffFilter: selectedPastFutureDayOffFilter, listDayOff: listDayOffs);
+                    return FilteredDayOffList(bucket: widget.bucket,
+                        startEndDayOffFilter: selectedStartEndDayOffFilter,
+                        pastFutureDayOffFilter: selectedPastFutureDayOffFilter,
+                        listDayOff: listDayOffs,
+                    callback: callback);
                   },
                 ),
               )

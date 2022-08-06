@@ -17,14 +17,15 @@ class Pool extends HiveObject {
   Pool(this.name, this.maxDays, {this.color = Colors.green});
 
   double getTotalTakenDays() {
-    if (dayOffList == null){
+    if (dayOffList == null || dayOffList!.isEmpty){
       return 0;
+    }else{
+      double takenDay = 0;
+      for (DayOff dayOff in dayOffList!.castHiveList()){
+        takenDay += dayOff.getTotalTakenDays();
+      }
+      return takenDay;
     }
-    double takenDay = 0;
-    for (DayOff dayOff in dayOffList!.castHiveList()){
-      takenDay += dayOff.getTotalTakenDays();
-    }
-    return takenDay;
   }
 
   double getAvailableDays() {
